@@ -153,19 +153,6 @@
             font-weight: 700;
         }
         
-        .hero-graphic {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40%;
-            min-width: 400px;
-            max-width: 600px;
-            opacity: 0.9;
-            z-index: 1;
-            filter: drop-shadow(0 0 20px rgba(255, 0, 204, 0.4));
-        }
-        
         /* Services Section */
         .services {
             padding: 6rem 0;
@@ -265,7 +252,7 @@
             color: rgba(255, 255, 255, 0.7);
         }
         
-        /* About Section - Why Vibe Agency */
+        /* About Section */
         .about {
             padding: 6rem 0;
             background: linear-gradient(135deg, rgba(7, 0, 49, 0.95), rgba(10, 4, 64, 0.95));
@@ -541,51 +528,6 @@
             outline: none;
             border-color: var(--neon-cyan);
             box-shadow: 0 0 0 3px rgba(0, 242, 234, 0.2);
-        }content {
-            display: flex;
-            align-items: center;
-            gap: 4rem;
-        }
-        
-        .booking-text {
-            flex: 1;
-        }
-        
-        .booking-form {
-            flex: 1;
-            background-color: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--dark);
-        }
-        
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
         
         /* Footer */
@@ -704,12 +646,12 @@
                 display: none;
             }
             
-            .hero-graphic {
-                opacity: 0.2;
-            }
-            
             .nav-links {
                 display: none;
+            }
+            
+            .booking-form {
+                padding: 1.5rem;
             }
         }
         
@@ -727,9 +669,14 @@
         }
         
         .ai-animation {
-            position: relative;
-            width: 100%;
-            height: 400px;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40%;
+            min-width: 400px;
+            max-width: 600px;
+            height: 100%;
             z-index: 1;
         }
         
@@ -857,7 +804,7 @@
         </div>
     </section>
 
-    <!-- About Section - Why Vibe Agency -->
+    <!-- About Section -->
     <section class="about" id="about">
         <div class="container">
             <div class="section-title">
@@ -938,28 +885,130 @@
                     <p>Sau khi nhận thông tin, chúng tôi sẽ liên hệ lại trong vòng 24 giờ để sắp xếp buổi tư vấn trực tiếp hoặc online.</p>
                 </div>
                 <div class="booking-form">
-                    <form>
+                    <form id="booking-form">
                         <div class="form-group">
                             <label for="name">Họ và tên</label>
-                            <input type="text" id="name" name="name" required>
+                            <input type="text" id="name" name="name" required aria-required="true">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
+                            <input type="email" id="email" name="email" required aria-required="true">
                         </div>
                         <div class="form-group">
                             <label for="phone">Số điện thoại</label>
-                            <input type="tel" id="phone" name="phone" required>
+                            <input type="tel" id="phone" name="phone" required aria-required="true">
                         </div>
                         <div class="form-group">
                             <label for="company">Tên doanh nghiệp</label>
-                            <input type="text" id="company" name="company" required>
+                            <input type="text" id="company" name="company" required aria-required="true">
                         </div>
                         <div class="form-group">
                             <label for="service">Dịch vụ quan tâm</label>
-                            <select id="service" name="service" required>
+                            <select id="service" name="service" required aria-required="true">
                                 <option value="">Chọn dịch vụ</option>
                                 <option value="ai-marketing">Vibe Marketing (AI)</option>
                                 <option value="social-media">Social Media Management</option>
                                 <option value="brand-strategy">Brand Strategy</option>
-                                <option value="go-to-
+                                <option value="go-to-market">Go-To-Market Plan</option>
+                                <option value="marketing-advice">Marketing Advice</option>
+                                <option value="data-analytics">Data Analytics</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Tin nhắn</label>
+                            <textarea id="message" name="message" rows="4" aria-label="Tin nhắn"></textarea>
+                        </div>
+                        <button type="submit" class="cta-button">Gửi Yêu Cầu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Vibe Agency</h3>
+                    <p>Giải pháp marketing toàn diện với công nghệ AI, giúp doanh nghiệp Việt Nam tỏa sáng trong kỷ nguyên số.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Liên Kết Nhanh</h3>
+                    <ul class="footer-links">
+                        <li><a href="#services">Dịch Vụ</a></li>
+                        <li><a href="#about">Về Chúng Tôi</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#booking">Đặt Lịch</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Liên Hệ</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:info@vibeagency.vn">info@vibeagency.vn</a></li>
+                        <li><a href="tel:+842839998888">+84 28 3999 8888</a></li>
+                        <li>123 Đường Lê Lợi, Quận 1, TP.HCM, Việt Nam</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 Vibe Agency. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Font Awesome for Social Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- JavaScript for Form Submission and AI Animation -->
+    <script>
+        // Form Submission Handling
+        document.getElementById('booking-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            console.log('Form Submitted:', data);
+            alert('Yêu cầu của bạn đã được gửi! Chúng tôi sẽ liên hệ trong vòng 24 giờ.');
+            this.reset();
+        });
+
+        // AI Animation Connections
+        function updateConnections() {
+            const circles = document.querySelectorAll('.ai-circle');
+            const connections = document.querySelectorAll('.ai-connection');
+            const container = document.querySelector('.ai-animation');
+
+            const positions = Array.from(circles).map(circle => {
+                const rect = circle.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+                return {
+                    x: rect.left - containerRect.left + rect.width / 2,
+                    y: rect.top - containerRect.top + rect.height / 2
+                };
+            });
+
+            connections.forEach((connection, index) => {
+                const start = positions[index % positions.length];
+                const end = positions[(index + 1) % positions.length];
+                const length = Math.sqrt((end.x - start.x) ** 2 + (end.y - start.y) ** 2);
+                const angle = Math.atan2(end.y - start.y, end.x - start.x) * 180 / Math.PI;
+
+                connection.style.width = `${length}px`;
+                connection.style.left = `${start.x}px`;
+                connection.style.top = `${start.y}px`;
+                connection.style.transform = `rotate(${angle}deg)`;
+            });
+        }
+
+        // Update connections on load and animation
+        window.addEventListener('load', updateConnections);
+        setInterval(updateConnections, 100);
+    </script>
+</body>
+</html>
