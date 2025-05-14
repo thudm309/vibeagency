@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Agency - Marketing với "Vibe" AI</title>
+    <style>
+        :root {
+            --primary: #00f2ea;
+            --primary-dark: #00c7c2;
+            --secondary: #ff00cc;
+            --dark: #0a0440;
+            --light: #f8fafc;
+            --accent: #f435ff;
+            --gradient-start: rgba(0, 242, 234, 0.8);
+            --gradient-end: rgba(255, 0, 204, 0.8);
+            --deep-blue: #070031;
+            --neon-cyan: #00f2ea;
+            --neon-pink: #ff00cc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--deep-blue);
+            color: white;
+            line-height: 1.7;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background-color: rgba(7, 0, 49, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0, 242, 234, 0.2);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-dot {
+            color: var(--neon-pink);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--neon-cyan);
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 15px rgba(0, 242, 234, 0.5);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0, 242, 234, 0.7);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--deep-blue);
+            position: relative;
+            overflow: hidden;
+            padding: 8rem 0 4rem;
+        }
+        
+        .hero-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(0, 242, 234, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 242, 234, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .hero-highlight {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        
+        .hero-graphic {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40%;
+            min-width: 400px;
+            max-width: 600px;
+            opacity: 0.9;
+            z-index: 1;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 204, 0.4));
+        }
+        
+        /* Services Section */
+        .services {
+            padding: 6rem 0;
+            background-color: rgba(10, 4, 64, 0.8);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            color: white;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-pink));
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(0, 242, 234, 0.7);
+        }
+        
+        .section-title p {
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background-color: rgba(7, 0, 49, 0.7);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 242, 234, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: 1px solid rgba(0, 242, 234, 0.2);
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-pink));
+            z-index: -1;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0, 242, 234, 0.3);
+        }
+        
+        .service-icon {
+            font-size: 2.5rem;
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: rgba(0, 242, 234, 0.1);
+            border: 1px solid rgba(0, 242, 234, 0.3);
+            box-shadow: 0 0 15px rgba(0, 242, 234, 0.3);
+        }
+        
+        .service-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .service-card p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* About Section - Why Vibe Agency */
+        .about {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, rgba(7, 0, 49, 0.95), rgba(10, 4, 64, 0.95));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 234, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 204, 0.1) 0%, transparent 30%);
+            z-index: 0;
+        }
+        
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .about-text {
+            flex: 1;
+        }
+        
+        .about-text h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .about-text p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+        }
+        
+        .about-image {
+            flex: 1;
+            position: relative;
+        }
+        
+        .about-image img {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 0 30px rgba(0, 242, 234, 0.3);
+            border: 1px solid rgba(0, 242, 234, 0.3);
+            object-fit: cover;
+            height: 400px;
+        }
+        
+        .about-image::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed var(--neon-cyan);
+            border-radius: 1rem;
+            top: 20px;
+            left: 20px;
+            z-index: -1;
+            animation: pulse 3s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0.7;
+            }
+        }
+        
+        .ai-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-cyan);
+            border-radius: 50%;
+            opacity: 0.6;
+            box-shadow: 0 0 10px var(--neon-cyan);
+            animation: float 10s infinite linear;
+        }
+        
+        .particle:nth-child(2n) {
+            background-color: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        
+        /* Blog Section */
+        .blog {
+            padding: 6rem 0;
+            background-color: rgba(7, 0, 49, 0.9);
+            position: relative;
+        }
+        
+        .blog::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 242, 234, 0.05) 0%, transparent 70%);
+            z-index: 0;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .blog-card {
+            background-color: rgba(10, 4, 64, 0.7);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 242, 234, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(0, 242, 234, 0.2);
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 242, 234, 0.3);
+        }
+        
+        .blog-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(0, 242, 234, 0.2);
+        }
+        
+        .blog-content {
+            padding: 1.5rem;
+        }
+        
+        .blog-date {
+            color: var(--neon-cyan);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .blog-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            color: white;
+        }
+        
+        .blog-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+        }
+        
+        .read-more {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .read-more:hover {
+            color: var(--neon-pink);
+        }
+        
+        /* Booking Section */
+        .booking {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .booking::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.05),
+                rgba(255, 255, 255, 0.05) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            z-index: 0;
+        }
+        
+        .booking-content {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .booking-text {
+            flex: 1;
+            color: white;
+        }
+        
+        .booking-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .booking-text p {
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .booking-form {
+            flex: 1;
+            background-color: rgba(10, 4, 64, 0.8);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 242, 234, 0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: rgba(7, 0, 49, 0.5);
+            border: 1px solid rgba(0, 242, 234, 0.3);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: white;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 242, 234, 0.2);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--deep-blue);
+            color: white;
+            padding: 4rem 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-pink), var(--neon-cyan));
+            opacity: 0.5;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            color: white;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-pink));
+            bottom: -8px;
+            left: 0;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(0, 242, 234, 0.5);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--neon-cyan);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(0, 242, 234, 0.1);
+            color: white;
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 242, 234, 0.3);
+        }
+        
+        .social-link:hover {
+            background-color: var(--neon-cyan);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 242, 234, 0.4);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* AI Animation */
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        
+        .ai-animation {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            z-index: 1;
+        }
+        
+        .ai-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            opacity: 0.7;
+            animation: float 8s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(0, 242, 234, 0.5);
+        }
+        
+        .ai-circle:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 60%;
+            animation-delay: 0s;
+        }
+        
+        .ai-circle:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 40%;
+            left: 30%;
+            animation-delay: -2s;
+        }
+        
+        .ai-circle:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            left: 70%;
+            animation-delay: -4s;
+        }
+        
+        .ai-connection {
+            position: absolute;
+            background: linear-gradient(to right, var(--neon-cyan), var(--neon-pink));
+            height: 2px;
+            opacity: 0.4;
+            transform-origin: left center;
+            box-shadow: 0 0 10px rgba(0, 242, 234, 0.5);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .about-content, .booking-content {
+                flex-direction: column;
+            }
+            
+            .about-image::before {
+                display: none;
+            }
+            
+            .hero-graphic {
+                opacity: 0.2;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    Vibe<span class="logo-dot">.</span>Agency
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#services">Dịch Vụ</a></li>
+                    <li><a href="#about">Về Chúng Tôi</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#booking">Đặt Lịch</a></li>
+                </ul>
+                <a href="#booking"><button class="cta-button">Liên Hệ Ngay</button></a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Marketing với <span class="hero-highlight">AI vibe</span> cho thời đại mới</h1>
+                <p>Giải pháp marketing toàn diện được hỗ trợ bởi AI, mang lại hiệu quả vượt trội cho doanh nghiệp vừa và nhỏ tại Việt Nam.</p>
+                <a href="#services"><button class="cta-button">Khám Phá Dịch Vụ</button></a>
+            </div>
+        </div>
+        <div class="hero-graphic">
+            <img src="https://images.unsplash.com/photo-1639322537504-6427a16b0a28?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="AI Technology Visual" style="width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(0, 242, 234, 0.4);">
+        </div>
+        <div class="ai-animation">
+            <div class="ai-circle"></div>
+            <div class="ai-circle"></div>
+            <div class="ai-circle"></div>
+            <div class="ai-connection"></div>
+            <div class="ai-connection"></div>
+            <div class="ai-connection"></div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Dịch Vụ Của Chúng Tôi</h2>
+                <p>Giải pháp marketing tích hợp AI giúp doanh nghiệp của bạn tỏa sáng trong thế giới kỹ thuật số</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🤖</div>
+                    <h3>Vibe Marketing (AI)</h3>
+                    <p>Áp dụng công nghệ AI tiên tiến để phân tích dữ liệu, tự động hóa quy trình và cá nhân hóa trải nghiệm khách hàng, tạo nên chiến dịch marketing với "vibe" độc đáo.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📱</div>
+                    <h3>Social Media Management</h3>
+                    <p>Quản lý toàn diện các kênh mạng xã hội, tạo nội dung hấp dẫn, tương tác với cộng đồng và phân tích hiệu suất để tối ưu hóa chiến lược tiếp cận.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎯</div>
+                    <h3>Brand Strategy</h3>
+                    <p>Xây dựng chiến lược thương hiệu mạnh mẽ, từ định vị, câu chuyện đến nhận diện thương hiệu, giúp doanh nghiệp nổi bật và kết nối sâu sắc với khách hàng.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🚀</div>
+                    <h3>Go-To-Market Plan</h3>
+                    <p>Lập kế hoạch chi tiết cho việc ra mắt sản phẩm mới, từ nghiên cứu thị trường, phân tích đối thủ đến các chiến dịch quảng cáo và kênh phân phối.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💡</div>
+                    <h3>Marketing Advice</h3>
+                    <p>Tư vấn chuyên sâu về chiến lược marketing phù hợp với quy mô, ngành nghề và mục tiêu kinh doanh của doanh nghiệp, đưa ra
