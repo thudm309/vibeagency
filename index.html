@@ -541,6 +541,51 @@
             outline: none;
             border-color: var(--neon-cyan);
             box-shadow: 0 0 0 3px rgba(0, 242, 234, 0.2);
+        }content {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+        
+        .booking-text {
+            flex: 1;
+        }
+        
+        .booking-form {
+            flex: 1;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
         
         /* Footer */
@@ -645,6 +690,29 @@
             z-index: 1;
         }
         
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .about-content, .booking-content {
+                flex-direction: column;
+            }
+            
+            .about-image::before {
+                display: none;
+            }
+            
+            .hero-graphic {
+                opacity: 0.2;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
         /* AI Animation */
         @keyframes float {
             0% {
@@ -706,29 +774,6 @@
             transform-origin: left center;
             box-shadow: 0 0 10px rgba(0, 242, 234, 0.5);
         }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .about-content, .booking-content {
-                flex-direction: column;
-            }
-            
-            .about-image::before {
-                display: none;
-            }
-            
-            .hero-graphic {
-                opacity: 0.2;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-        }
     </style>
 </head>
 <body>
@@ -759,9 +804,6 @@
                 <p>Giải pháp marketing toàn diện được hỗ trợ bởi AI, mang lại hiệu quả vượt trội cho doanh nghiệp vừa và nhỏ tại Việt Nam.</p>
                 <a href="#services"><button class="cta-button">Khám Phá Dịch Vụ</button></a>
             </div>
-        </div>
-        <div class="hero-graphic">
-            <img src="https://images.unsplash.com/photo-1639322537504-6427a16b0a28?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="AI Technology Visual" style="width: 100%; border-radius: 10px; box-shadow: 0 0 30px rgba(0, 242, 234, 0.4);">
         </div>
         <div class="ai-animation">
             <div class="ai-circle"></div>
@@ -804,4 +846,120 @@
                 <div class="service-card">
                     <div class="service-icon">💡</div>
                     <h3>Marketing Advice</h3>
-                    <p>Tư vấn chuyên sâu về chiến lược marketing phù hợp với quy mô, ngành nghề và mục tiêu kinh doanh của doanh nghiệp, đưa ra
+                    <p>Tư vấn chuyên sâu về chiến lược marketing phù hợp với quy mô, ngành nghề và mục tiêu kinh doanh của doanh nghiệp, đưa ra giải pháp thực tiễn và hiệu quả.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📈</div>
+                    <h3>Data Analytics</h3>
+                    <p>Phân tích dữ liệu chuyên sâu để đưa ra insights có giá trị, giúp doanh nghiệp đưa ra quyết định chính xác và tối ưu hóa chiến lược marketing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section - Why Vibe Agency -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>Tại Sao Chọn Vibe Agency?</h2>
+                <p>Chúng tôi kết hợp sự sáng tạo con người với sức mạnh của AI để mang lại kết quả vượt trội</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Kết hợp độc đáo giữa Marketing và AI</h3>
+                    <p>Tại Vibe Agency, chúng tôi hiểu rằng marketing hiện đại cần nhiều hơn những chiến lược truyền thống. Chúng tôi tích hợp trí tuệ nhân tạo vào mọi khía cạnh của dịch vụ, từ phân tích dữ liệu, tự động hóa quy trình đến cá nhân hóa trải nghiệm khách hàng.</p>
+                    <p>Điều làm nên sự khác biệt của chúng tôi là khả năng kết hợp giữa sự nhạy bén trong marketing của con người với sức mạnh phân tích của AI, tạo nên chiến lược marketing toàn diện và hiệu quả.</p>
+                    <p>Chúng tôi không chỉ áp dụng công nghệ mới nhất, mà còn đảm bảo rằng mỗi giải pháp đều được thiết kế riêng cho từng doanh nghiệp, phù hợp với quy mô, ngành nghề và mục tiêu kinh doanh cụ thể.</p>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="AI Marketing Illustration">
+                    <div class="ai-particles">
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                        <div class="particle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog" id="blog">
+        <div class="container">
+            <div class="section-title">
+                <h2>Blog & Insights</h2>
+                <p>Khám phá những bài viết chuyên sâu về marketing, AI và chiến lược thương hiệu</p>
+            </div>
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1677442135184-d849f54a7930?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="AI Marketing Blog" class="blog-image">
+                    <div class="blog-content">
+                        <div class="blog-date">12 Tháng 05, 2025</div>
+                        <h3>5 Cách AI Đang Thay Đổi Marketing Truyền Thống</h3>
+                        <p>Khám phá cách trí tuệ nhân tạo đang cách mạng hóa ngành marketing và cách doanh nghiệp vừa và nhỏ có thể tận dụng xu hướng này.</p>
+                        <a href="#" class="read-more">Đọc tiếp →</a>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Social Media Marketing Blog" class="blog-image">
+                    <div class="blog-content">
+                        <div class="blog-date">05 Tháng 05, 2025</div>
+                        <h3>Chiến Lược Social Media Hiệu Quả Cho Doanh Nghiệp Nhỏ</h3>
+                        <p>Những chiến lược social media đơn giản nhưng hiệu quả giúp doanh nghiệp nhỏ cạnh tranh với các đối thủ lớn hơn.</p>
+                        <a href="#" class="read-more">Đọc tiếp →</a>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1560472355-536de3962603?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Brand Building Blog" class="blog-image">
+                    <div class="blog-content">
+                        <div class="blog-date">28 Tháng 04, 2025</div>
+                        <h3>Xây Dựng Thương Hiệu Trong Kỷ Nguyên Số</h3>
+                        <p>Những nguyên tắc cốt lõi giúp xây dựng thương hiệu mạnh mẽ và bền vững trong thời đại kỹ thuật số đầy biến động.</p>
+                        <a href="#" class="read-more">Đọc tiếp →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section class="booking" id="booking">
+        <div class="container">
+            <div class="section-title">
+                <h2>Đặt Lịch Tư Vấn</h2>
+                <p>Hãy để chúng tôi giúp bạn phát triển doanh nghiệp với những chiến lược marketing hiệu quả</p>
+            </div>
+            <div class="booking-content">
+                <div class="booking-text">
+                    <h3>Sẵn sàng nâng tầm doanh nghiệp của bạn?</h3>
+                    <p>Đội ngũ chuyên gia marketing của chúng tôi sẽ phân tích chi tiết về doanh nghiệp của bạn và đưa ra những giải pháp phù hợp nhất.</p>
+                    <p>Sau khi nhận thông tin, chúng tôi sẽ liên hệ lại trong vòng 24 giờ để sắp xếp buổi tư vấn trực tiếp hoặc online.</p>
+                </div>
+                <div class="booking-form">
+                    <form>
+                        <div class="form-group">
+                            <label for="name">Họ và tên</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Tên doanh nghiệp</label>
+                            <input type="text" id="company" name="company" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service">Dịch vụ quan tâm</label>
+                            <select id="service" name="service" required>
+                                <option value="">Chọn dịch vụ</option>
+                                <option value="ai-marketing">Vibe Marketing (AI)</option>
+                                <option value="social-media">Social Media Management</option>
+                                <option value="brand-strategy">Brand Strategy</option>
+                                <option value="go-to-
