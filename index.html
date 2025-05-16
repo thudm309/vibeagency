@@ -969,14 +969,28 @@
     <!-- JavaScript for Form Submission and AI Animation -->
     <script>
         // Form Submission Handling
-        document.getElementById('booking-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            console.log('Form Submitted:', data);
+document.getElementById('booking-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    // Gửi dữ liệu đến Google Script Web App hoặc Webhook của Typeform
+    fetch('http://vibeagency.vn/webhook', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
             alert('Yêu cầu của bạn đã được gửi! Chúng tôi sẽ liên hệ trong vòng 24 giờ.');
             this.reset();
-        });
+        } else {
+            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+        }
+    });
+});
 
         // AI Animation Connections
         function updateConnections() {
