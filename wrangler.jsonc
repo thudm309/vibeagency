@@ -2,17 +2,10 @@
   "name": "vibeagency",
   "compatibility_date": "2025-05-16",
   "assets": {
-    "directory": "./"
+    "directory": "."
   },
   "site": {
-    "bucket": "./",
+    "bucket": ".",
     "entry-point": "index.html"
-  },
-  "routes": [
-    { "pattern": "*", "serve": "index.html" }
-  ],
-  "build": {
-    "command": "npm run build",
-    "output": "dist" 
   }
 }
