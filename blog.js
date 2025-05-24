@@ -101,7 +101,7 @@ function renderBlogPosts(posts) {
                 <div class="blog-date">${formatDate(post.date)}</div>
                 <h3>${post.title}</h3>
                 <p>${post.excerpt}</p>
-                <a href="/blog/${post.slug}.html" class="read-more">Đọc tiếp →</a>
+                <a href="/blog/${post.slug}" class="read-more">Đọc tiếp →</a>
             </div>
         </div>
     `).join('');

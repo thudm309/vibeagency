@@ -74,141 +74,153 @@
             min-height: 100vh;
         }
         
-        .post-header {
-            text-align: center;
-            margin-bottom: 3rem;
+        .post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
         
         .post-meta {
-            margin-bottom: 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
             color: var(--neon-cyan);
-        }
-        
-        .post-date {
             font-size: 1rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-        
-        .post-tags {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            margin-top: 0.5rem;
-        }
-        
-        .tag {
-            background: rgba(0, 242, 234, 0.2);
-            color: var(--neon-cyan);
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.875rem;
-            border: 1px solid rgba(0, 242, 234, 0.3);
+            font-weight: 500;
         }
         
         .post-title {
             font-size: 2.5rem;
             margin-bottom: 2rem;
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1.2;
+            text-align: center;
         }
         
-        .featured-image {
+        .post-image {
             width: 100%;
-            max-width: 800px;
-            height: 400px;
+            max-width: 100%;
+            height: 300px;
             object-fit: cover;
-            border-radius: 1rem;
-            box-shadow: 0 0 30px rgba(0, 242, 234, 0.3);
-            border: 1px solid rgba(0, 242, 234, 0.3);
+            border-radius: 15px;
             margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
         .post-content {
-            max-width: 800px;
-            margin: 0 auto;
             line-height: 1.8;
             font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
         }
         
-        .post-content h1, .post-content h2, .post-content h3 {
+        .post-content h1 {
             color: var(--neon-cyan);
-            margin: 2rem 0 1rem;
+            font-size: 2rem;
+            margin: 2rem 0 1rem 0;
+            border-bottom: 2px solid var(--neon-cyan);
+            padding-bottom: 0.5rem;
         }
         
-        .post-content h1 { font-size: 2rem; }
-        .post-content h2 { font-size: 1.75rem; }
-        .post-content h3 { font-size: 1.5rem; }
+        .post-content h2 {
+            color: var(--neon-pink);
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .post-content h3 {
+            color: var(--neon-cyan);
+            font-size: 1.3rem;
+            margin: 1.2rem 0 0.8rem 0;
+        }
         
         .post-content p {
-            margin-bottom: 1.5rem;
-            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.2rem;
+            text-align: justify;
         }
         
         .post-content ul, .post-content ol {
-            margin-bottom: 1.5rem;
+            margin: 1rem 0;
             padding-left: 2rem;
-            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .post-content li {
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .post-content strong {
+            color: var(--neon-cyan);
+            font-weight: 600;
         }
         
         .post-content blockquote {
-            border-left: 4px solid var(--neon-cyan);
+            border-left: 4px solid var(--neon-pink);
             padding-left: 1.5rem;
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             font-style: italic;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.7);
         }
         
         .post-content code {
             background: rgba(0, 242, 234, 0.1);
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
             font-family: 'Courier New', monospace;
             color: var(--neon-cyan);
         }
         
-        .post-content pre {
-            background: rgba(7, 0, 49, 0.8);
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            overflow-x: auto;
-            margin: 1.5rem 0;
-            border: 1px solid rgba(0, 242, 234, 0.3);
-        }
-        
-        .back-to-blog {
-            color: var(--neon-cyan);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .back-to-blog:hover {
-            color: var(--neon-pink);
-        }
-        
-        .post-footer {
-            text-align: center;
+        .post-tags {
             margin-top: 3rem;
             padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
+        .tag {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            color: var(--dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin: 0.2rem;
+            font-weight: 500;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            color: var(--neon-pink);
+            transform: translateX(-5px);
+        }
+        
         .loading {
             text-align: center;
-            padding: 4rem 0;
             color: var(--neon-cyan);
+            font-size: 1.2rem;
+            margin: 3rem 0;
         }
         
         .error {
             text-align: center;
-            padding: 4rem 0;
             color: var(--neon-pink);
+            font-size: 1.2rem;
+            margin: 3rem 0;
         }
         
         @media (max-width: 768px) {
@@ -216,7 +228,7 @@
                 font-size: 2rem;
             }
             
-            .featured-image {
+            .post-image {
                 height: 250px;
             }
             
@@ -249,103 +261,60 @@
             </div>
             
             <article id="post-content" style="display: none;">
-                <header class="post-header">
-                    <div class="post-meta">
-                        <time id="post-date" class="post-date"></time>
-                        <div id="post-tags" class="post-tags"></div>
+                <div class="post-container">
+                    <header class="post-header">
+                        <div class="post-meta">
+                            <time id="post-date" class="post-date"></time>
+                            <div id="post-tags" class="post-tags"></div>
+                        </div>
+                        <h1 id="post-title" class="post-title"></h1>
+                        <img id="featured-image" class="post-image" style="display: none;">
+                    </header>
+                    
+                    <div id="post-body" class="post-content">
+                        <!-- Blog content will be loaded here -->
                     </div>
-                    <h1 id="post-title" class="post-title"></h1>
-                    <img id="featured-image" class="featured-image" style="display: none;">
-                </header>
-                
-                <div id="post-body" class="post-content">
-                    <!-- Blog content will be loaded here -->
+                    
+                    <footer class="post-footer">
+                        <a href="/" class="back-button">← Quay lại trang chủ</a>
+                    </footer>
                 </div>
-                
-                <footer class="post-footer">
-                    <a href="/" class="back-to-blog">← Quay lại trang chủ</a>
-                </footer>
             </article>
         </div>
     </main>
 
     <script>
-        // Replace the getSlugFromURL function in your blog-post.html with this:
-        // Replace the getSlugFromURL function in your blog-post.html
+        // Get slug from URL
         function getSlugFromURL() {
-            console.log('=== Debugging Slug Detection ===');
-            console.log('Full URL:', window.location.href);
-            console.log('Original URL:', window.ORIGINAL_URL);
-            console.log('Referrer:', document.referrer);
-            
-            // Known slugs from GitHub
-            const knownSlugs = ['test1', 'test2'];
-            
-            // Method 1: Check if Pages Function injected the slug
+            // Priority 1: Check if Cloudflare Function injected the slug
             if (window.BLOG_SLUG) {
-                console.log('Pages Function provided slug:', window.BLOG_SLUG);
-                if (knownSlugs.includes(window.BLOG_SLUG)) {
-                    console.log('✅ Valid slug from Pages Function:', window.BLOG_SLUG);
-                    return window.BLOG_SLUG;
-                }
+                console.log('Found slug from Cloudflare Function:', window.BLOG_SLUG);
+                return window.BLOG_SLUG;
             }
             
-            // Method 2: Check data attribute on body
-            const bodySlug = document.body.getAttribute('data-blog-slug');
-            if (bodySlug && knownSlugs.includes(bodySlug)) {
-                console.log('✅ Valid slug from body attribute:', bodySlug);
-                return bodySlug;
+            // Priority 2: Check URL query parameter (for local development)
+            const urlParams = new URLSearchParams(window.location.search);
+            const postParam = urlParams.get('post');
+            
+            if (postParam) {
+                console.log('Found post parameter:', postParam);
+                return postParam;
             }
             
-            // Method 3: Check original URL if provided by Pages Function
-            if (window.ORIGINAL_URL) {
-                console.log('Checking original URL:', window.ORIGINAL_URL);
-                for (const slug of knownSlugs) {
-                    if (window.ORIGINAL_URL.includes(`/blog/${slug}.html`) || window.ORIGINAL_URL.includes(`/blog/${slug}`)) {
-                        console.log('✅ Found slug in original URL:', slug);
-                        return slug;
-                    }
-                }
-            }
+            // Priority 3: Extract from pathname (fallback)
+            const pathname = window.location.pathname;
+            const segments = pathname.split('/').filter(segment => segment.length > 0);
             
-            // Method 4: Check current URL for known slugs
-            const currentUrl = window.location.href;
-            for (const slug of knownSlugs) {
-                if (currentUrl.includes(slug)) {
-                    console.log('✅ Found slug in current URL:', slug);
+            if (segments.length > 1 && segments[0] === 'blog') {
+                const slug = segments[1].replace('.html', '');
+                if (slug && slug !== 'blog-post') {
+                    console.log('Extracted slug from pathname:', slug);
                     return slug;
                 }
             }
             
-            // Method 5: Check referrer (though it might be empty)
-            const referrer = document.referrer;
-            if (referrer) {
-                for (const slug of knownSlugs) {
-                    if (referrer.includes(`/blog/${slug}.html`) || referrer.includes(`/blog/${slug}`)) {
-                        console.log('✅ Found slug in referrer:', slug);
-                        return slug;
-                    }
-                }
-            }
-            
-            // Method 6: Try to extract from any URL context
-            const allContext = [
-                window.location.href,
-                window.ORIGINAL_URL || '',
-                document.referrer,
-                document.title
-            ].join(' ');
-            
-            for (const slug of knownSlugs) {
-                if (allContext.includes(slug)) {
-                    console.log('✅ Found slug in context:', slug);
-                    return slug;
-                }
-            }
-            
-            // Method 7: Default to first available slug
-            console.log('❌ No specific slug found, using default:', knownSlugs[0]);
-            return knownSlugs[0];
+            console.error('No valid slug found in URL');
+            return null;
         }
 
         // Parse markdown frontmatter
@@ -373,35 +342,78 @@
                 date: data.date || new Date().toISOString(),
                 featured_image: data.featured_image,
                 tags: data.tags ? data.tags.split(',').map(t => t.trim()) : [],
-                body: body.trim()
+                content: body.trim()
             };
         }
 
-        // Convert markdown to HTML
-        function markdownToHTML(markdown) {
-            return markdown
-                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-                .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-                .replace(/\n\n/gim, '</p><p>')
-                .replace(/^(.+)$/gim, '<p>$1</p>')
-                .replace(/\[([^\]]+)\]\(([^\)]+)\)/gim, '<a href="$2">$1</a>');
-        }
-
-        // Format date
-        function formatDate(dateString) {
-            try {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('vi-VN', {
-                    day: '2-digit',
+        // Render blog post
+        function renderPost(post) {
+            console.log('Rendering post:', post);
+            
+            // Set title
+            document.getElementById('post-title').textContent = post.title;
+            document.title = `${post.title} - Vibe Agency`;
+            
+            // Set date
+            const dateElement = document.getElementById('post-date');
+            if (post.date) {
+                const date = new Date(post.date);
+                dateElement.textContent = date.toLocaleDateString('vi-VN', {
+                    year: 'numeric',
                     month: 'long',
-                    year: 'numeric'
+                    day: 'numeric'
                 });
-            } catch (error) {
-                return dateString;
             }
+            
+            // Set featured image
+            const imageElement = document.getElementById('featured-image');
+            if (post.featured_image) {
+                imageElement.src = post.featured_image;
+                imageElement.alt = post.title;
+                imageElement.style.display = 'block';
+                imageElement.onerror = function() {
+                    console.log('Failed to load image:', post.featured_image);
+                    this.style.display = 'none';
+                };
+            } else {
+                imageElement.style.display = 'none';
+            }
+            
+            // Set tags
+            const tagsElement = document.getElementById('post-tags');
+            if (post.tags && post.tags.length > 0) {
+                tagsElement.innerHTML = post.tags.map(tag => 
+                    `<span class="tag">${tag.trim()}</span>`
+                ).join('');
+            }
+            
+            // Set content
+            const contentElement = document.getElementById('post-body');
+            if (post.content) {
+                // Convert markdown to HTML (basic conversion)
+                let htmlContent = post.content
+                    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/^\- (.*$)/gim, '<li>$1</li>')
+                    .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
+                    .replace(/\n\n/g, '</p><p>')
+                    .replace(/^(.*)$/gim, '<p>$1</p>')
+                    .replace(/<p><h/g, '<h')
+                    .replace(/<\/h([1-6])><\/p>/g, '</h$1>')
+                    .replace(/<p><li>/g, '<ul><li>')
+                    .replace(/<\/li><\/p>/g, '</li></ul>')
+                    .replace(/<\/ul><ul>/g, '')
+                    .replace(/<p><\/p>/g, '');
+                
+                contentElement.innerHTML = htmlContent;
+            }
+            
+            // Show the post
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('post-content').style.display = 'block';
         }
 
         // Load and display blog post
@@ -411,7 +423,8 @@
             
             if (!slug) {
                 console.error('No slug found');
-                showError();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
                 return;
             }
 
@@ -439,43 +452,13 @@
                     throw new Error('Invalid post format');
                 }
 
-                // Update page
-                document.getElementById('page-title').textContent = `${post.title} - Vibe Agency`;
-                document.title = `${post.title} - Vibe Agency`;
-                document.getElementById('post-title').textContent = post.title;
-                document.getElementById('post-date').textContent = formatDate(post.date);
-                document.getElementById('post-body').innerHTML = markdownToHTML(post.body);
-
-                // Featured image
-                if (post.featured_image) {
-                    const img = document.getElementById('featured-image');
-                    img.src = post.featured_image;
-                    img.alt = post.title;
-                    img.style.display = 'block';
-                }
-
-                // Tags
-                if (post.tags && post.tags.length > 0) {
-                    const tagsContainer = document.getElementById('post-tags');
-                    tagsContainer.innerHTML = post.tags.map(tag => 
-                        `<span class="tag">${tag}</span>`
-                    ).join('');
-                }
-
-                // Show content
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('post-content').style.display = 'block';
-                console.log('Post loaded successfully!');
+                renderPost(post);
 
             } catch (error) {
                 console.error('Error loading blog post:', error);
-                showError();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
             }
-        }
-
-        function showError() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
         }
 
         // Load post when page loads
