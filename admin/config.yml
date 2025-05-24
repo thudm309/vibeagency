@@ -2,6 +2,7 @@ backend:
   name: github
   repo: thudm309/vibeagency
   branch: main
+  use_graphql: true
 media_folder: "public/uploads"
 public_folder: "/uploads"
 collections:
