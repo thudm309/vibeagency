@@ -2,12 +2,6 @@ backend:
   name: github
   repo: thudm309/vibeagency
   branch: main
-  # Try implicit flow instead of external OAuth
-  auth_type: implicit
-  app_ibackend:
-  name: github
-  repo: thudm309/vibeagency
-  branch: main
   base_url: https://vibeagency.vn
   auth_endpoint: /api/auth
 
