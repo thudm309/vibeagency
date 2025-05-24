@@ -2,9 +2,8 @@ backend:
   name: github
   repo: thudm309/vibeagency
   branch: main
-  # Use implicit flow - simpler and more reliable
   auth_type: implicit
-  app_id: Ov23liD2j4t4CEcU4isH
+  app_id: YOUR_GITHUB_APP_ID_HERE  # Use the App ID from step 6, not the OAuth Client ID
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
