@@ -83,6 +83,7 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
         
         .post-meta {
@@ -124,6 +125,13 @@
             margin-top: 2rem;
             position: relative;
             z-index: 1;
+            word-break: break-word;     /* Chrome, Edge, Safari */
+            overflow-wrap: anywhere;    /* Firefox */
+        }
+        
+        .post-content a {
+            word-break: break-word;     /* Chrome, Edge, Safari */
+            overflow-wrap: anywhere;    /* Firefox */
         }
         
         .post-content > *:first-child {
@@ -336,6 +344,38 @@
             return null;
         }
 
+        // Chuyển Markdown sang HTML (đủ heading, danh sách, link, xuống dòng)
+        function mdToHtml(md) {
+            return md
+                .replace(/(\r\n|\r|\n)+/g, '\n')                               // chuẩn hoá xuống dòng
+                .replace(/^###### (.*)$/gim, '<h6>$1</h6>')
+                .replace(/^##### (.*)$/gim, '<h5>$1</h5>')
+                .replace(/^#### (.*)$/gim, '<h4>$1</h4>')
+                .replace(/^### (.*)$/gim,  '<h3>$1</h3>')
+                .replace(/^## (.*)$/gim,   '<h2>$1</h2>')
+                .replace(/^# (.*)$/gim,    '<h1>$1</h1>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g,     '<em>$1</em>')
+                // danh sách gạch đầu dòng
+                .replace(/^\s*-\s+(.+)$/gim, '<ul><li>$1</li></ul>')
+                // danh sách đánh số
+                .replace(/^\s*\d+\.\s+(.+)$/gim, '<ol><li>$1</li></ol>')
+                // link [text](url)
+                .replace(/\[([^\]]+)]\((https?:\/\/[^\s)]+)\)/gim,
+                         '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+                // tách đoạn
+                .replace(/\n{2,}/g, '</p><p>')
+                .replace(/\n/g, '<br>')
+                .replace(/^/g, '<p>').replace(/$/g, '</p>')
+                // clean up empty paragraphs and fix nested elements
+                .replace(/<p><\/p>/g, '')
+                .replace(/<p>\s*<\/p>/g, '')
+                .replace(/<p><h([1-6])>/g, '<h$1>')
+                .replace(/<\/h([1-6])><\/p>/g, '</h$1>')
+                .replace(/<\/ul><ul>/g, '')
+                .replace(/<\/ol><ol>/g, '');
+        }
+
         // Parse frontmatter and content
         function parseFrontmatter(content) {
             const lines = content.split('\n');
@@ -409,20 +449,32 @@
             const featuredImage = frontmatter.featured_image || post.featured_image;
             if (featuredImage) {
                 const imgElement = document.getElementById('featured-image');
-                imgElement.src = featuredImage;
+                
+                // Always use GitHub raw URL for immediate availability
+                let imageUrl = featuredImage;
+                
+                // If it's a local path (starts with /uploads/ or similar), convert to GitHub raw URL
+                if (featuredImage.startsWith('/uploads/') || featuredImage.startsWith('uploads/')) {
+                    const imagePath = featuredImage.startsWith('/') ? featuredImage.substring(1) : featuredImage;
+                    imageUrl = `https://raw.githubusercontent.com/thudm309/vibeagency/main/public/${imagePath}`;
+                }
+                // If it's already a GitHub blob URL, convert to raw URL
+                else if (featuredImage.includes('github.com') && featuredImage.includes('/blob/')) {
+                    imageUrl = featuredImage.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+                }
+                // If it's an external URL (unsplash, etc.), use as-is
+                else if (featuredImage.startsWith('http')) {
+                    imageUrl = featuredImage;
+                }
+                
+                console.log('Loading image from:', imageUrl);
+                imgElement.src = imageUrl;
                 imgElement.style.display = 'block';
                 
-                // Add fallback for GitHub raw URL
+                // Simple fallback - hide image if it fails to load
                 imgElement.onerror = function() {
-                    if (!this.src.includes('raw.githubusercontent.com')) {
-                        const githubRawUrl = featuredImage.replace(
-                            'https://github.com/',
-                            'https://raw.githubusercontent.com/'
-                        ).replace('/blob/', '/');
-                        this.src = githubRawUrl;
-                    } else {
-                        this.style.display = 'none';
-                    }
+                    console.warn('Could not load', imageUrl);
+                    this.remove();                // xoá hẳn thẻ img nếu không tải được
                 };
             }
             
@@ -434,24 +486,8 @@
                 const titleRegex = new RegExp(`^#\\s*${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\n?`, 'i');
                 processedContent = processedContent.replace(titleRegex, '');
                 
-                // Convert markdown to HTML (improved conversion)
-                let htmlContent = processedContent
-                    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-                    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-                    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                    .replace(/^\- (.*$)/gim, '<li>$1</li>')
-                    .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
-                    .replace(/\n\n/g, '</p><p>')
-                    .replace(/^(.*)$/gim, '<p>$1</p>')
-                    .replace(/<p><h/g, '<h')
-                    .replace(/<\/h([1-6])><\/p>/g, '</h$1>')
-                    .replace(/<p><li>/g, '<ul><li>')
-                    .replace(/<\/li><\/p>/g, '</li></ul>')
-                    .replace(/<\/ul><ul>/g, '')
-                    .replace(/<p><\/p>/g, '')
-                    .replace(/<p>\s*<\/p>/g, '');
+                // Convert markdown to HTML
+                const htmlContent = mdToHtml(processedContent);
                 
                 contentElement.innerHTML = htmlContent;
             }
