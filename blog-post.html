@@ -368,13 +368,12 @@
             // Set featured image
             const imageElement = document.getElementById('featured-image');
             if (post.featured_image) {
-                // Properly encode the image path for browser requests
-                const encodedImagePath = encodeURI(post.featured_image);
-                imageElement.src = encodedImagePath;
+                // Use the image path as-is since it's already properly encoded in the YAML
+                imageElement.src = post.featured_image;
                 imageElement.alt = post.title;
                 imageElement.style.display = 'block';
                 imageElement.onerror = function() {
-                    console.log('Failed to load image:', encodedImagePath);
+                    console.log('Failed to load image:', post.featured_image);
                     this.style.display = 'none';
                     // Ensure layout doesn't hang on image load failure
                     document.querySelector('.blog-post-container')?.classList.remove('loading');
