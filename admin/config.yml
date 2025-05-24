@@ -2,8 +2,14 @@ backend:
   name: github
   repo: thudm309/vibeagency
   branch: main
+  # Try implicit flow instead of external OAuth
+  auth_type: implicit
+  app_ibackend:
+  name: github
+  repo: thudm309/vibeagency
+  branch: main
   base_url: https://vibeagency.vn
-  auth_endpoint: /api/auth  # Added leading slash
+  auth_endpoint: /api/auth
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
