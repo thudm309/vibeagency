@@ -3,7 +3,7 @@ backend:
   repo: thudm309/vibeagency
   branch: main
   auth_type: implicit
-  app_id: YOUR_GITHUB_APP_ID_HERE  # Use the App ID from step 6, not the OAuth Client ID
+  app_id: 1315836
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
@@ -18,6 +18,3 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime" }
       - { label: "Body", name: "body", widget: "markdown" }
-      - { label: "Featured Image", name: "featured_image", widget: "image", required: false }
-      - { label: "Tags", name: "tags", widget: "list", required: false }
-      - { label: "Draft", name: "draft", widget: "boolean", default: false }
