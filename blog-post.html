@@ -271,72 +271,81 @@
 
     <script>
         // Replace the getSlugFromURL function in your blog-post.html with this:
+        // Replace the getSlugFromURL function in your blog-post.html
         function getSlugFromURL() {
             console.log('=== Debugging Slug Detection ===');
             console.log('Full URL:', window.location.href);
-            console.log('Pathname:', window.location.pathname);
-            console.log('Search:', window.location.search);
-            console.log('Hash:', window.location.hash);
+            console.log('Original URL:', window.ORIGINAL_URL);
             console.log('Referrer:', document.referrer);
             
-            // Method 1: Check if slug was injected by Pages Function
+            // Known slugs from GitHub
+            const knownSlugs = ['test1', 'test2'];
+            
+            // Method 1: Check if Pages Function injected the slug
             if (window.BLOG_SLUG) {
-                console.log('Slug from Pages Function:', window.BLOG_SLUG);
-                return window.BLOG_SLUG;
-            }
-            
-            // Method 2: Try query parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            const slugFromParam = urlParams.get('slug');
-            console.log('Slug from query param:', slugFromParam);
-            if (slugFromParam) {
-                return slugFromParam;
-            }
-            
-            // Method 3: IMPROVED - Extract from referrer
-            const referrer = document.referrer;
-            if (referrer) {
-                console.log('Trying to extract from referrer:', referrer);
-                
-                // Try multiple patterns to extract slug from referrer
-                let match = referrer.match(/\/blog\/([^\/\?#]+)\.html/);
-                if (!match) {
-                    match = referrer.match(/\/blog\/([^\/\?#]+)/);
+                console.log('Pages Function provided slug:', window.BLOG_SLUG);
+                if (knownSlugs.includes(window.BLOG_SLUG)) {
+                    console.log('✅ Valid slug from Pages Function:', window.BLOG_SLUG);
+                    return window.BLOG_SLUG;
                 }
-                
-                if (match && match[1]) {
-                    const slug = match[1];
-                    console.log('✅ Slug found from referrer:', slug);
+            }
+            
+            // Method 2: Check data attribute on body
+            const bodySlug = document.body.getAttribute('data-blog-slug');
+            if (bodySlug && knownSlugs.includes(bodySlug)) {
+                console.log('✅ Valid slug from body attribute:', bodySlug);
+                return bodySlug;
+            }
+            
+            // Method 3: Check original URL if provided by Pages Function
+            if (window.ORIGINAL_URL) {
+                console.log('Checking original URL:', window.ORIGINAL_URL);
+                for (const slug of knownSlugs) {
+                    if (window.ORIGINAL_URL.includes(`/blog/${slug}.html`) || window.ORIGINAL_URL.includes(`/blog/${slug}`)) {
+                        console.log('✅ Found slug in original URL:', slug);
+                        return slug;
+                    }
+                }
+            }
+            
+            // Method 4: Check current URL for known slugs
+            const currentUrl = window.location.href;
+            for (const slug of knownSlugs) {
+                if (currentUrl.includes(slug)) {
+                    console.log('✅ Found slug in current URL:', slug);
                     return slug;
                 }
             }
             
-            // Method 4: Check current URL for any hints
-            const currentUrl = window.location.href;
-            if (currentUrl.includes('test1')) {
-                console.log('Found test1 in current URL');
-                return 'test1';
-            }
-            if (currentUrl.includes('test2')) {
-                console.log('Found test2 in current URL');
-                return 'test2';
-            }
-            
-            // Method 5: Check for specific patterns in the full URL or referrer
-            const allUrls = [window.location.href, document.referrer].join(' ');
-            
-            // Look for common blog post patterns
-            const patterns = ['test1', 'test2'];
-            for (const pattern of patterns) {
-                if (allUrls.includes(pattern)) {
-                    console.log(`Found ${pattern} in URL context`);
-                    return pattern;
+            // Method 5: Check referrer (though it might be empty)
+            const referrer = document.referrer;
+            if (referrer) {
+                for (const slug of knownSlugs) {
+                    if (referrer.includes(`/blog/${slug}.html`) || referrer.includes(`/blog/${slug}`)) {
+                        console.log('✅ Found slug in referrer:', slug);
+                        return slug;
+                    }
                 }
             }
             
-            // Method 6: Default fallback
-            console.log('❌ No slug found anywhere, defaulting to test1');
-            return 'test1';
+            // Method 6: Try to extract from any URL context
+            const allContext = [
+                window.location.href,
+                window.ORIGINAL_URL || '',
+                document.referrer,
+                document.title
+            ].join(' ');
+            
+            for (const slug of knownSlugs) {
+                if (allContext.includes(slug)) {
+                    console.log('✅ Found slug in context:', slug);
+                    return slug;
+                }
+            }
+            
+            // Method 7: Default to first available slug
+            console.log('❌ No specific slug found, using default:', knownSlugs[0]);
+            return knownSlugs[0];
         }
 
         // Parse markdown frontmatter
