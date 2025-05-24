@@ -7,5 +7,11 @@
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@^3/dist/decap-cms.js"></script>
+    <script>
+      window.CMS_MANUAL_INIT = true;
+      document.addEventListener("DOMContentLoaded", function() {
+        window.CMS.init();
+      });
+    </script>
   </body>
 </html>
