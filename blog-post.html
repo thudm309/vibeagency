@@ -110,14 +110,33 @@
             height: 300px;
             object-fit: cover;
             border-radius: 15px;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: block;
+            clear: both;
         }
         
         .post-content {
             line-height: 1.8;
             font-size: 1.1rem;
             color: rgba(255, 255, 255, 0.9);
+            clear: both;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .post-content > *:first-child {
+            margin-top: 0;
+        }
+        
+        .post-content > *:last-child {
+            margin-bottom: 0;
+        }
+        
+        .post-header {
+            margin-bottom: 3rem;
+            text-align: center;
         }
         
         .post-content h1 {
@@ -317,90 +336,106 @@
             return null;
         }
 
-        // Parse markdown frontmatter
-        function parseMarkdown(content) {
-            const frontmatterRegex = /^---\s*\n(.*?)\n---\s*\n(.*)/s;
-            const match = content.match(frontmatterRegex);
+        // Parse frontmatter and content
+        function parseFrontmatter(content) {
+            const lines = content.split('\n');
+            let frontmatterEnd = -1;
+            let inFrontmatter = false;
             
-            if (!match) return null;
-            
-            const frontmatter = match[1];
-            const body = match[2];
-            
-            const data = {};
-            frontmatter.split('\n').forEach(line => {
-                const colonIndex = line.indexOf(':');
-                if (colonIndex > 0) {
-                    const key = line.substring(0, colonIndex).trim();
-                    const value = line.substring(colonIndex + 1).trim().replace(/^["']|["']$/g, '');
-                    data[key] = value;
+            // Check if content starts with frontmatter
+            if (lines[0] && (lines[0].trim() === '---' || lines[0].includes('title:'))) {
+                inFrontmatter = true;
+                
+                // Find the end of frontmatter
+                for (let i = 1; i < lines.length; i++) {
+                    if (lines[i].trim() === '---') {
+                        frontmatterEnd = i;
+                        break;
+                    }
                 }
-            });
+            }
             
-            return {
-                title: data.title || 'Untitled',
-                date: data.date || new Date().toISOString(),
-                featured_image: data.featured_image,
-                tags: data.tags ? data.tags.split(',').map(t => t.trim()) : [],
-                content: body.trim()
-            };
+            let frontmatter = {};
+            let bodyContent = content;
+            
+            if (frontmatterEnd > 0) {
+                // Parse frontmatter
+                const frontmatterLines = lines.slice(0, frontmatterEnd);
+                frontmatterLines.forEach(line => {
+                    const colonIndex = line.indexOf(':');
+                    if (colonIndex > 0) {
+                        const key = line.substring(0, colonIndex).trim();
+                        const value = line.substring(colonIndex + 1).trim();
+                        frontmatter[key] = value;
+                    }
+                });
+                
+                // Get body content (everything after frontmatter)
+                bodyContent = lines.slice(frontmatterEnd + 1).join('\n').trim();
+            }
+            
+            return { frontmatter, content: bodyContent };
         }
 
-        // Render blog post
-        function renderPost(post) {
-            console.log('Rendering post:', post);
+        // Display blog post
+        function displayPost(post) {
+            const { frontmatter, content } = parseFrontmatter(post.content || '');
             
             // Set title
-            document.getElementById('post-title').textContent = post.title;
-            document.title = `${post.title} - Vibe Agency`;
+            const title = frontmatter.title || post.title || 'Untitled';
+            document.getElementById('post-title').textContent = title;
+            document.title = `${title} - Vibe Agency`;
             
             // Set date
-            const dateElement = document.getElementById('post-date');
-            if (post.date) {
-                const date = new Date(post.date);
-                dateElement.textContent = date.toLocaleDateString('vi-VN', {
+            const date = frontmatter.date || post.date;
+            if (date) {
+                const dateObj = new Date(date);
+                document.getElementById('post-date').textContent = dateObj.toLocaleDateString('vi-VN', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
             }
             
-            // Set featured image
-            const imageElement = document.getElementById('featured-image');
-            if (post.featured_image) {
-                // Use the image path as-is since it's already properly encoded in the YAML
-                imageElement.src = post.featured_image;
-                imageElement.alt = post.title;
-                imageElement.style.display = 'block';
-                imageElement.onerror = function() {
-                    console.log('Failed to load image from Cloudflare, trying GitHub raw URL:', post.featured_image);
-                    // Fallback to GitHub raw URL if Cloudflare hasn't deployed yet
-                    const githubRawUrl = `https://raw.githubusercontent.com/thudm309/vibeagency/main/public${post.featured_image}`;
-                    this.src = githubRawUrl;
-                    this.onerror = function() {
-                        console.log('Failed to load image from GitHub too:', githubRawUrl);
-                        this.style.display = 'none';
-                        // Ensure layout doesn't hang on image load failure
-                        document.querySelector('.blog-post-container')?.classList.remove('loading');
-                    };
-                };
-            } else {
-                imageElement.style.display = 'none';
-            }
-            
             // Set tags
-            const tagsElement = document.getElementById('post-tags');
-            if (post.tags && post.tags.length > 0) {
-                tagsElement.innerHTML = post.tags.map(tag => 
-                    `<span class="tag">${tag.trim()}</span>`
-                ).join('');
+            const tags = frontmatter.tags || post.tags;
+            if (tags) {
+                const tagArray = typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags;
+                const tagsContainer = document.getElementById('post-tags');
+                tagsContainer.innerHTML = tagArray.map(tag => `<span class="tag">${tag}</span>`).join('');
             }
             
-            // Set content
+            // Set featured image
+            const featuredImage = frontmatter.featured_image || post.featured_image;
+            if (featuredImage) {
+                const imgElement = document.getElementById('featured-image');
+                imgElement.src = featuredImage;
+                imgElement.style.display = 'block';
+                
+                // Add fallback for GitHub raw URL
+                imgElement.onerror = function() {
+                    if (!this.src.includes('raw.githubusercontent.com')) {
+                        const githubRawUrl = featuredImage.replace(
+                            'https://github.com/',
+                            'https://raw.githubusercontent.com/'
+                        ).replace('/blob/', '/');
+                        this.src = githubRawUrl;
+                    } else {
+                        this.style.display = 'none';
+                    }
+                };
+            }
+            
+            // Process content
             const contentElement = document.getElementById('post-body');
-            if (post.content) {
-                // Convert markdown to HTML (basic conversion)
-                let htmlContent = post.content
+            if (content) {
+                // Remove duplicate title if it exists at the beginning of content
+                let processedContent = content;
+                const titleRegex = new RegExp(`^#\\s*${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\n?`, 'i');
+                processedContent = processedContent.replace(titleRegex, '');
+                
+                // Convert markdown to HTML (improved conversion)
+                let htmlContent = processedContent
                     .replace(/^### (.*$)/gim, '<h3>$1</h3>')
                     .replace(/^## (.*$)/gim, '<h2>$1</h2>')
                     .replace(/^# (.*$)/gim, '<h1>$1</h1>')
@@ -415,7 +450,8 @@
                     .replace(/<p><li>/g, '<ul><li>')
                     .replace(/<\/li><\/p>/g, '</li></ul>')
                     .replace(/<\/ul><ul>/g, '')
-                    .replace(/<p><\/p>/g, '');
+                    .replace(/<p><\/p>/g, '')
+                    .replace(/<p>\s*<\/p>/g, '');
                 
                 contentElement.innerHTML = htmlContent;
             }
@@ -470,14 +506,10 @@
                 const decodedContent = decodeURIComponent(escape(atob(data.content)));
                 console.log('Decoded content preview:', decodedContent.substring(0, 200));
                 
-                const post = parseMarkdown(decodedContent);
+                const post = { content: decodedContent };
                 console.log('Parsed post:', post);
                 
-                if (!post || !post.title) {
-                    throw new Error('Invalid post format');
-                }
-
-                renderPost(post);
+                displayPost(post);
 
             } catch (error) {
                 console.error('Error loading blog post:', error);
