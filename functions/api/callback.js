@@ -1,7 +1,8 @@
-// Cloudflare Pages Function for Decap CMS GitHub OAuth callback
-export async function onRequest(context) {
-  // This function just redirects back to the admin UI with the access_token in the hash
-  const url = new URL(context.request.url);
-  const params = url.search;
-  return Response.redirect(`/admin/#${params.substring(1)}`, 302);
+// /functions/api/callback.js
+export async function onRequest({ request }) {
+  const url     = new URL(request.url);          // URL tuyệt đối – OK
+  const params  = url.search.substring(1);       // "code=...&state=..."
+
+  /* 1️⃣  Redirect tuyệt đối về /admin/#...  */
+  return Response.redirect(`${url.origin}/admin/#${params}`, 302);
 }
