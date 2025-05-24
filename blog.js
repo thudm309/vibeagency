@@ -93,7 +93,7 @@ function renderBlogPosts(posts) {
     blogGrid.innerHTML = latestPosts.map(post => `
         <div class="blog-card">
             ${post.featured_image ? `
-                <img src="${decodeURIComponent(post.featured_image)}" alt="${post.title}" class="blog-image">
+                <img src="${encodeURI(post.featured_image)}" alt="${post.title}" class="blog-image">
             ` : `
                 <img src="https://images.unsplash.com/photo-1677442135184-d849f54a7930?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="${post.title}" class="blog-image">
             `}
