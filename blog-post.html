@@ -373,10 +373,16 @@
                 imageElement.alt = post.title;
                 imageElement.style.display = 'block';
                 imageElement.onerror = function() {
-                    console.log('Failed to load image:', post.featured_image);
-                    this.style.display = 'none';
-                    // Ensure layout doesn't hang on image load failure
-                    document.querySelector('.blog-post-container')?.classList.remove('loading');
+                    console.log('Failed to load image from Cloudflare, trying GitHub raw URL:', post.featured_image);
+                    // Fallback to GitHub raw URL if Cloudflare hasn't deployed yet
+                    const githubRawUrl = `https://raw.githubusercontent.com/thudm309/vibeagency/main/public${post.featured_image}`;
+                    this.src = githubRawUrl;
+                    this.onerror = function() {
+                        console.log('Failed to load image from GitHub too:', githubRawUrl);
+                        this.style.display = 'none';
+                        // Ensure layout doesn't hang on image load failure
+                        document.querySelector('.blog-post-container')?.classList.remove('loading');
+                    };
                 };
             } else {
                 imageElement.style.display = 'none';
