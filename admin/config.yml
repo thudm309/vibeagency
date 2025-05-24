@@ -3,6 +3,12 @@ backend:
   repo: thudm309/vibeagency
   branch: main
   base_url: https://sveltia-cms-auth.thudm309.workers.dev
+  commit_messages:
+    create: 'Create {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Upload "{{path}}"'
+    deleteMedia: 'Delete "{{path}}"'
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
