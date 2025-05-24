@@ -3,9 +3,11 @@ backend:
   repo: thudm309/vibeagency
   branch: main
   base_url: https://vibeagency.vn
-  auth_endpoint: api/auth
+  auth_endpoint: /api/auth  # Added leading slash
+
 media_folder: "public/uploads"
 public_folder: "/uploads"
+
 collections:
   - name: "blog"
     label: "Blog"
@@ -16,3 +18,6 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime" }
       - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "Featured Image", name: "featured_image", widget: "image", required: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
