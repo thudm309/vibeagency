@@ -368,11 +368,13 @@
             // Set featured image
             const imageElement = document.getElementById('featured-image');
             if (post.featured_image) {
-                imageElement.src = post.featured_image;
+                // Decode URL-encoded image paths automatically
+                const decodedImagePath = decodeURIComponent(post.featured_image);
+                imageElement.src = decodedImagePath;
                 imageElement.alt = post.title;
                 imageElement.style.display = 'block';
                 imageElement.onerror = function() {
-                    console.log('Failed to load image:', post.featured_image);
+                    console.log('Failed to load image:', decodedImagePath);
                     this.style.display = 'none';
                 };
             } else {
