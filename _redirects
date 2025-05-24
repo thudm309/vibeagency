@@ -1,8 +1,30 @@
-# Pass the slug as a query parameter so JavaScript can detect it
-/blog/:slug.html /blog-post.html?slug=:slug 200
-
-# Optional: Redirect /blog to homepage blog section
-/blog /index.html#blog 302
-
-# Optional: Handle trailing slashes
-/blog/ /index.html#blog 302
+// functions/blog/[slug].js
+export async function onRequest(context) {
+  const { params, request } = context;
+  let slug = params.slug;
+  
+  // Remove .html extension if present
+  if (slug.endsWith('.html')) {
+    slug = slug.replace('.html', '');
+  }
+  
+  console.log('Blog function called with slug:', slug);
+  
+  // Get the blog-post.html template
+  const templateUrl = new URL('/blog-post.html', request.url);
+  const templateResponse = await fetch(templateUrl.toString());
+  
+  if (!templateResponse.ok) {
+    return new Response('Template not found', { status: 404 });
+  }
+  
+  let html = await templateResponse.text();
+  
+  // Inject the slug into the HTML as a script variable
+  const slugScript = `<script>window.BLOG_SLUG = "${slug}";</script>`;
+  html = html.replace('</head>', `${slugScript}</head>`);
+  
+  return new Response(html, {
+    headers: { 'Content-Type': 'text/html' }
+  });
+}

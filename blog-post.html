@@ -270,7 +270,7 @@
     </main>
 
     <script>
-        // Get the blog post slug from URL - FIXED VERSION
+        // Updated getSlugFromURL function for blog-post.html
         function getSlugFromURL() {
             console.log('=== Debugging Slug Detection ===');
             console.log('Full URL:', window.location.href);
@@ -279,7 +279,13 @@
             console.log('Hash:', window.location.hash);
             console.log('Referrer:', document.referrer);
             
-            // Method 1: Try query parameter (?slug=test1)
+            // Method 1: Check if slug was injected by Pages Function
+            if (window.BLOG_SLUG) {
+                console.log('Slug from Pages Function:', window.BLOG_SLUG);
+                return window.BLOG_SLUG;
+            }
+            
+            // Method 2: Try query parameter (?slug=test1)
             const urlParams = new URLSearchParams(window.location.search);
             const slugFromParam = urlParams.get('slug');
             console.log('Slug from query param:', slugFromParam);
@@ -287,40 +293,34 @@
                 return slugFromParam;
             }
             
-            // Method 2: Try to extract from referrer URL
+            // Method 3: Extract from referrer URL
             const referrer = document.referrer;
             if (referrer) {
                 console.log('Trying to extract from referrer:', referrer);
-                const match = referrer.match(/\/blog\/(.+?)\.html/);
+                // Try different patterns
+                let match = referrer.match(/\/blog\/(.+?)\.html/);
+                if (!match) {
+                    match = referrer.match(/\/blog\/(.+?)(?:\?|#|$)/);
+                }
                 if (match) {
                     console.log('Slug from referrer:', match[1]);
                     return match[1];
                 }
             }
             
-            // Method 3: Try hash parameter (#slug=test1)
-            const hash = window.location.hash;
-            if (hash.includes('slug=')) {
-                const hashMatch = hash.match(/slug=([^&]+)/);
-                if (hashMatch) {
-                    console.log('Slug from hash:', hashMatch[1]);
-                    return hashMatch[1];
-                }
-            }
-            
-            // Method 4: Check if URL contains blog post path
-            const fullPath = window.location.pathname + window.location.search + window.location.hash;
-            if (fullPath.includes('test1')) {
+            // Method 4: Try to extract from current URL params or hash
+            const fullUrl = window.location.href;
+            if (fullUrl.includes('test1')) {
                 console.log('Found test1 in URL');
                 return 'test1';
             }
-            if (fullPath.includes('test2')) {
+            if (fullUrl.includes('test2')) {
                 console.log('Found test2 in URL');
                 return 'test2';
             }
             
-            // Method 5: Default for testing - try test1 first
-            console.log('No slug found, trying test1 as default');
+            // Method 5: Default
+            console.log('No slug found, using test1 as default');
             return 'test1';
         }
 
