@@ -75,15 +75,15 @@
         }
         
         .post-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 800px;
+            margin: 2rem auto;
             position: relative;
+            margin-top: 32px;        /* Keep content clear of fixed header */
         }
         
         .post-meta {
@@ -344,6 +344,19 @@
             return null;
         }
 
+        // Resolve asset path
+        function resolveAssetPath(src) {
+            // Converts /uploads/… -> raw.githubusercontent… ; leaves http[s] intact
+            if (src.startsWith('/uploads/') || src.startsWith('uploads/')) {
+                const p = src.startsWith('/') ? src.slice(1) : src;
+                return `https://raw.githubusercontent.com/thudm309/vibeagency/main/public/${p}`;
+            }
+            if (src.includes('github.com') && src.includes('/blob/')) {
+                return src.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+            }
+            return src;                 // already an external URL
+        }
+
         // Chuyển Markdown sang HTML (đủ heading, danh sách, link, xuống dòng)
         function mdToHtml(md) {
             if (!md || md.trim() === '') return '';
@@ -369,6 +382,10 @@
             html = html.replace(/\[([^\]]+)]\((https?:\/\/[^\s)]+)\)/gim, 
                 '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
             
+            // Convert images ![alt](src)
+            html = html.replace(/!\[([^\]]*)]\(([^)]+)\)/g, (_, alt, src) =>
+                `<img src="${resolveAssetPath(src)}" alt="${alt}" class="post-image">`);
+            
             // Convert lists
             html = html
                 .replace(/^\s*-\s+(.+)$/gim, '<li>$1</li>')
@@ -387,8 +404,8 @@
                 para = para.trim();
                 if (!para) return '';
                 
-                // Don't wrap headings, lists in paragraphs
-                if (para.match(/^<(h[1-6]|ul|ol|li)/)) {
+                // Don't wrap headings, lists, images in paragraphs
+                if (para.match(/^<(h[1-6]|ul|ol|li|img)/)) {
                     return para;
                 }
                 
@@ -478,7 +495,7 @@
             }
             
             // Set featured image
-            const featuredImage = frontmatter.featured_image || post.featured_image;
+            const featuredImage = (frontmatter.featured_image || post.featured_image || '').trim();
             if (featuredImage) {
                 const imgElement = document.getElementById('featured-image');
                 
