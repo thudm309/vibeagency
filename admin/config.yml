@@ -2,8 +2,9 @@ backend:
   name: github
   repo: thudm309/vibeagency
   branch: main
-  base_url: https://vibeagency.vn
-  auth_endpoint: /api/auth
+  # Use implicit flow - simpler and more reliable
+  auth_type: implicit
+  app_id: Ov23liD2j4t4CEcU4isH
 
 media_folder: "public/uploads"
 public_folder: "/uploads"
