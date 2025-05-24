@@ -1,5 +1,4 @@
 // Cloudflare Pages Function for Decap CMS GitHub OAuth
-// Source: https://github.com/abhishektiwari-dev/decap-cms-cloudflare-pages-functions/blob/main/functions/auth.js
 
 export async function onRequest(context) {
   const url = new URL(context.request.url);
