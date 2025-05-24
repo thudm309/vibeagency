@@ -270,7 +270,7 @@
     </main>
 
     <script>
-        // Updated getSlugFromURL function for blog-post.html
+        // Replace the getSlugFromURL function in your blog-post.html with this:
         function getSlugFromURL() {
             console.log('=== Debugging Slug Detection ===');
             console.log('Full URL:', window.location.href);
@@ -285,7 +285,7 @@
                 return window.BLOG_SLUG;
             }
             
-            // Method 2: Try query parameter (?slug=test1)
+            // Method 2: Try query parameter
             const urlParams = new URLSearchParams(window.location.search);
             const slugFromParam = urlParams.get('slug');
             console.log('Slug from query param:', slugFromParam);
@@ -293,34 +293,49 @@
                 return slugFromParam;
             }
             
-            // Method 3: Extract from referrer URL
+            // Method 3: IMPROVED - Extract from referrer
             const referrer = document.referrer;
             if (referrer) {
                 console.log('Trying to extract from referrer:', referrer);
-                // Try different patterns
-                let match = referrer.match(/\/blog\/(.+?)\.html/);
+                
+                // Try multiple patterns to extract slug from referrer
+                let match = referrer.match(/\/blog\/([^\/\?#]+)\.html/);
                 if (!match) {
-                    match = referrer.match(/\/blog\/(.+?)(?:\?|#|$)/);
+                    match = referrer.match(/\/blog\/([^\/\?#]+)/);
                 }
-                if (match) {
-                    console.log('Slug from referrer:', match[1]);
-                    return match[1];
+                
+                if (match && match[1]) {
+                    const slug = match[1];
+                    console.log('✅ Slug found from referrer:', slug);
+                    return slug;
                 }
             }
             
-            // Method 4: Try to extract from current URL params or hash
-            const fullUrl = window.location.href;
-            if (fullUrl.includes('test1')) {
-                console.log('Found test1 in URL');
+            // Method 4: Check current URL for any hints
+            const currentUrl = window.location.href;
+            if (currentUrl.includes('test1')) {
+                console.log('Found test1 in current URL');
                 return 'test1';
             }
-            if (fullUrl.includes('test2')) {
-                console.log('Found test2 in URL');
+            if (currentUrl.includes('test2')) {
+                console.log('Found test2 in current URL');
                 return 'test2';
             }
             
-            // Method 5: Default
-            console.log('No slug found, using test1 as default');
+            // Method 5: Check for specific patterns in the full URL or referrer
+            const allUrls = [window.location.href, document.referrer].join(' ');
+            
+            // Look for common blog post patterns
+            const patterns = ['test1', 'test2'];
+            for (const pattern of patterns) {
+                if (allUrls.includes(pattern)) {
+                    console.log(`Found ${pattern} in URL context`);
+                    return pattern;
+                }
+            }
+            
+            // Method 6: Default fallback
+            console.log('❌ No slug found anywhere, defaulting to test1');
             return 'test1';
         }
 
