@@ -1,6 +1,5 @@
-# _redirects file - place this in your public folder or root directory
-# Redirect all blog post URLs to the dynamic template
-/blog/*.html /blog-post.html 200
+# Pass the slug as a query parameter so JavaScript can detect it
+/blog/:slug.html /blog-post.html?slug=:slug 200
 
 # Optional: Redirect /blog to homepage blog section
 /blog /index.html#blog 302
