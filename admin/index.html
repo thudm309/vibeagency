@@ -1,92 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vibe Agency Admin</title>
-  </head>
-  <body>
-    <script>
-      window.CMS_CONFIG_PATH = "admin/config.yml";
-      
-      // Debug authentication flow
-      console.log('🔍 Debugging Decap CMS Authentication');
-      console.log('Current URL:', window.location.href);
-      console.log('Hash:', window.location.hash);
-      
-      // Check if we have auth params in hash
-      if (window.location.hash && window.location.hash.includes('access_token')) {
-        console.log('✅ Auth token found in URL hash');
-        
-        // Parse the hash parameters
-        const hash = window.location.hash.substring(1);
-        const params = new URLSearchParams(hash.replace(/^\//, '')); // Remove leading slash if present
-        
-        const accessToken = params.get('access_token');
-        const tokenType = params.get('token_type');
-        const scope = params.get('scope');
-        const state = params.get('state');
-        
-        console.log('Access Token:', accessToken ? '✅ Present' : '❌ Missing');
-        console.log('Token Type:', tokenType);
-        console.log('Scope:', scope);
-        console.log('State:', state);
-        
-        // Try to help Decap CMS by cleaning up the URL
-        if (accessToken) {
-          console.log('🔧 Attempting to process authentication...');
-          
-          // Store in sessionStorage for Decap CMS
-          try {
-            sessionStorage.setItem('decap-cms-oauth-github', JSON.stringify({
-              access_token: accessToken,
-              token_type: tokenType || 'bearer',
-              scope: scope || 'repo'
-            }));
-            console.log('✅ Token stored in sessionStorage');
-          } catch (e) {
-            console.error('❌ Failed to store token in sessionStorage:', e);
-          }
-          
-          // Clean the URL by removing the hash after a short delay
-          setTimeout(() => {
-            console.log('🧹 Cleaning URL...');
-            window.history.replaceState({}, document.title, window.location.pathname);
-          }, 1000);
-        }
-      } else {
-        console.log('❌ No auth token found in URL');
-      }
-      
-      // Monitor CMS loading
-      window.addEventListener('load', () => {
-        console.log('📄 Page loaded');
-        
-        // Check periodically if CMS has loaded
-        let checkCount = 0;
-        const checkCMS = setInterval(() => {
-          checkCount++;
-          if (window.CMS) {
-            console.log('✅ Decap CMS loaded successfully');
-            clearInterval(checkCMS);
-            
-            // Check authentication state
-            setTimeout(() => {
-              const loginButton = document.querySelector('button[class*="login"], button[class*="Login"], [data-testid="login-button"]');
-              if (loginButton) {
-                console.log('❌ Still showing login button - authentication may have failed');
-              } else {
-                console.log('✅ Login button not found - possibly authenticated');
-              }
-            }, 2000);
-            
-          } else if (checkCount > 10) {
-            console.log('❌ CMS failed to load after 10 seconds');
-            clearInterval(checkCMS);
-          }
-        }, 1000);
-      });
-    </script>
-    <script src="https://unpkg.com/decap-cms@^3/dist/decap-cms.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Agency Admin</title>
+</head>
+<body>
+  <script src="https://unpkg.com/decap-cms@^3/dist/decap-cms.js"></script>
+</body>
 </html>
