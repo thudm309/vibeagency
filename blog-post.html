@@ -90,15 +90,14 @@
         /* Styling for elements within the post header */
         .post-meta {
             text-align: center;
-            margin-bottom: 0.5rem; /* Space after date */
+            margin-bottom: 0.5rem; 
             color: var(--neon-cyan);
             font-size: 1rem;
             font-weight: 500;
         }
         
-        .post-title { /* h1#post-title from frontmatter */
+        .post-title { 
             font-size: 2.5rem;
-            /* No top/bottom margin, handled by siblings or parent spacing */
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
             background-clip: text;
             -webkit-background-clip: text;
@@ -107,7 +106,6 @@
             text-align: center;
         }
         
-        /* For the main featured image (img#featured-image) */
         #featured-image.post-image { 
             width: 100%;
             max-width: 100%;
@@ -116,34 +114,32 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             display: block; 
-            margin-top: 1.5rem; /* Space after title, if image is shown */
+            margin-top: 1.5rem; 
         }
         
         #post-tags.post-tags {
-            margin-top: 1.5rem; /* Space after title OR featured image, if tags are shown */
+            margin-top: 1.5rem; 
             padding-top: 1rem; 
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: none; /* JS will show this if tags exist */
+            display: none; 
         }
 
-        /* The <header> element inside .post-container wrapping meta, title, image, tags */
         .post-header { 
-            margin-bottom: 2rem; /* Main space between entire header block and content body */
+            margin-bottom: 2rem; 
             text-align: center;
         }
 
-        .post-content { /* div#post-body, where Markdown body is rendered */
+        .post-content { 
             line-height: 1.8;
             font-size: 1.1rem;
-            color: white; /* Changed from rgba(255,255,255,0.9) for full opacity */
-            margin-top: 0; /* Rely on .post-header's margin-bottom */
+            color: white; 
+            margin-top: 0; 
             position: relative;
             z-index: 1;
             word-break: break-word;
             overflow-wrap: anywhere;
         }
         
-        /* For images within the post body (parsed from Markdown) */
         .post-content .body-image { 
             max-width: 100%;
             height: auto; 
@@ -171,7 +167,7 @@
             margin-bottom: 0;
         }
         
-        .post-content h1 { /* Headings from Markdown body */
+        .post-content h1 { 
             color: var(--neon-cyan);
             font-size: 2rem;
             margin: 2rem 0 1rem 0;
@@ -193,7 +189,7 @@
         
         .post-content p {
             margin-bottom: 1.2rem;
-            text-align: left; /* Changed from justify */
+            text-align: left; 
         }
         
         .post-content ul, .post-content ol {
@@ -203,7 +199,7 @@
         
         .post-content li {
             margin-bottom: 0.5rem;
-            color: rgba(255, 255, 255, 0.8); /* Keeping slight transparency for list items for now */
+            color: rgba(255, 255, 255, 0.8); 
         }
         
         .post-content strong {
@@ -227,7 +223,7 @@
             color: var(--neon-cyan);
         }
         
-        .tag { /* Individual tag style */
+        .tag { 
             display: inline-block;
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
             color: var(--dark);
@@ -239,7 +235,7 @@
         }
 
         .post-footer {
-            margin-top: 3rem; /* Space above footer elements like back button */
+            margin-top: 3rem; 
         }
         
         .back-button {
@@ -278,7 +274,7 @@
             .post-title {
                 font-size: 2rem;
             }
-            #featured-image.post-image { /* Featured image */
+            #featured-image.post-image { 
                 height: 250px;
             }
             .post-content {
@@ -378,65 +374,64 @@
             html = html.replace(/!\[([^\]]*)]\(([^)]+)\)/g, (_, alt, src) =>
                 `<img src="${resolveAssetPath(src)}" alt="${alt || 'blog image'}" class="body-image">`); 
             
-            // Simplified list handling for <ul>, assumes no complex nesting
             html = html.replace(/^\s*[-*+]\s+(.+)$/gim, '<li>$1</li>');
             html = html.replace(/(<li>.*?<\/li>\s*)+/g, (match) => `<ul>\n${match.trim()}\n</ul>\n`);
-            // Note: Ordered lists (1. item) would also be wrapped in <ul> with this simple parser.
             
             const paragraphs = html.split(/\n\s*\n/);
             html = paragraphs.map(para => {
                 para = para.trim();
                 if (!para) return '';
                 if (para.match(/^<(h[1-6]|ul|ol|li|img|blockquote|pre)/i)) return para;
-                para = para.replace(/\n/g, '<br>'); // Convert single newlines in paragraphs to <br>
+                para = para.replace(/\n/g, '<br>'); 
                 return `<p>${para}</p>`;
             }).filter(para => para).join('\n');
             html = html.replace(/<p><\/p>|<p>\s*<\/p>|<\/ul>\s*<ul>|<\/ol>\s*<ol>/g, '');
             return html;
         }
 
-        function parseFrontmatter(content) {
-            const lines = content.split('\n');
-            let frontmatterEnd = -1;
-            if (lines[0] && (lines[0].trim() === '---' || lines[0].includes('title:'))) {
+        function parseFrontmatter(rawContent) {
+            const lines = rawContent.split('\n');
+            let frontmatter = {};
+            let body = rawContent; 
+            let frontmatterEndLineIndex = -1; 
+
+            if (lines.length > 1 && lines[0].trim() === '---') {
                 for (let i = 1; i < lines.length; i++) {
                     if (lines[i].trim() === '---') {
-                        frontmatterEnd = i;
+                        frontmatterEndLineIndex = i;
                         break;
                     }
                 }
             }
-            
-            let frontmatter = {};
-            let bodyContent = content;
-            
-            if (frontmatterEnd > 0) {
-                const frontmatterLines = lines.slice(0, frontmatterEnd +1);
-                bodyContent = lines.slice(frontmatterEnd + 1).join('\n').trim();
 
-                frontmatterLines.forEach(line => {
+            if (frontmatterEndLineIndex > 0) { 
+                const frontmatterContentLines = lines.slice(1, frontmatterEndLineIndex); 
+                body = lines.slice(frontmatterEndLineIndex + 1).join('\n').trim();
+
+                frontmatterContentLines.forEach(line => {
                     const colonIndex = line.indexOf(':');
-                    if (colonIndex > 0) {
+                    if (colonIndex > -1) { 
                         const key = line.substring(0, colonIndex).trim();
                         let value = line.substring(colonIndex + 1).trim();
 
-                        if (value === "''" || value === '""') { value = ''; } 
+                        if (value === "''" || value === '""') { value = ''; }
                         else if (key === 'tags' && value === '[]') { value = ''; } 
                         else if (key === 'draft' && (value.toLowerCase() === 'true' || value.toLowerCase() === 'false')) {
                             value = (value.toLowerCase() === 'true');
                         }
-                        else if (value.length > 1 && ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))) {
+                        else if (value.length > 1 && value !== "''" && value !== '""' &&
+                                 ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))) {
                             value = value.substring(1, value.length - 1);
                         }
                         frontmatter[key] = value;
                     }
                 });
             }
-            return { frontmatter, content: bodyContent };
+            return { frontmatter, content: body };
         }
 
         function displayPost(post) {
-            const { frontmatter, content } = parseFrontmatter(post.content || '');
+            const { frontmatter, content: bodyContent } = parseFrontmatter(post.content || ''); // Renamed for clarity
             
             const title = frontmatter.title || 'Untitled';
             document.getElementById('post-title').textContent = title;
@@ -489,14 +484,15 @@
             }
             
             const contentElement = document.getElementById('post-body');
-            if (content) {
-                let processedContent = content;
+            if (bodyContent) { // Use the correctly separated bodyContent
+                let processedContent = bodyContent;
+                // This regex is a fallback for cases where the body MIGHT still start with H1 of the title
                 if (title !== 'Untitled') { 
                     const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    const titleRegex = new RegExp(`^#\\s*${escapedTitle}\\s*([\\r\\n]+)?`, 'i');
-                    processedContent = processedContent.replace(titleRegex, '');
+                    const titleRegex = new RegExp(`^#\\s*${escapedTitle}\\s*([\\r\\n]+|$)`, 'i');
+                    processedContent = processedContent.replace(titleRegex, '').trimStart();
                 }
-                contentElement.innerHTML = mdToHtml(processedContent.trim());
+                contentElement.innerHTML = mdToHtml(processedContent);
             }
             
             document.getElementById('loading').style.display = 'none';
@@ -528,7 +524,15 @@
                 const data = await response.json();
                 if (!data.content) throw new Error('No content found in GitHub response');
                 
-                const decodedContent = decodeURIComponent(escape(atob(data.content)));
+                // Use TextDecoder for more robust UTF-8 decoding
+                const binaryString = atob(data.content);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const decodedContent = new TextDecoder().decode(bytes);
+                
+                console.log('Decoded content from GitHub (first 500 chars):\n', decodedContent.substring(0,500));
                 displayPost({ content: decodedContent });
 
             } catch (error) {
