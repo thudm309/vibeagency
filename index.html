@@ -102,6 +102,12 @@
             transform: translateY(-3px);
             box-shadow: 0 0 20px rgba(0, 242, 234, 0.7);
         }
+        .cta-button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
         
         /* Hero Section */
         .hero {
@@ -448,7 +454,7 @@
             color: var(--neon-pink);
         }
         
-        /* Booking Section */
+        /* Booking Section CSS */
         .booking {
             padding: 6rem 0;
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
@@ -496,7 +502,7 @@
             text-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
         
-        .booking-form {
+        .booking-form { /* Container for the custom form */
             flex: 1;
             background-color: rgba(10, 4, 64, 0.8);
             padding: 2rem; 
@@ -504,6 +510,37 @@
             box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(0, 242, 234, 0.3);
+        }
+
+        /* Custom Form Element Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: rgba(7, 0, 49, 0.5);
+            border: 1px solid rgba(0, 242, 234, 0.3);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: white;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 242, 234, 0.2);
         }
         
         /* Footer */
@@ -860,11 +897,34 @@
                     <p>Đội ngũ chuyên gia marketing của chúng tôi sẽ phân tích chi tiết về doanh nghiệp của bạn và đưa ra những giải pháp phù hợp nhất.</p>
                     <p>Sau khi nhận thông tin, chúng tôi sẽ liên hệ lại trong vòng 24 giờ để sắp xếp buổi tư vấn trực tiếp hoặc online.</p>
                 </div>
+                <!-- MODIFIED BOOKING FORM HERE -->
                 <div class="booking-form">
-                    <!-- START: GOOGLE FORM EMBED -->
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfqAHvOgREiTJTRroN9Gxh64ziHG4ZhO0YIRMioqLwNz3xs9A/viewform?embedded=true" width="100%" height="959" frameborder="0" marginheight="0" marginwidth="0">Đang tải…</iframe>
-                    <!-- END: GOOGLE FORM EMBED -->
+                    <form id="vibe-booking-form">
+                        <div class="form-group">
+                            <label for="name">Họ và tên</label>
+                            <input type="text" id="name" name="name" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Tên doanh nghiệp</label>
+                            <input type="text" id="company" name="company" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="tel" id="phone" name="phone" required aria-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Nội dung</label>
+                            <textarea id="message" name="message" rows="4" aria-label="Nội dung"></textarea>
+                        </div>
+                        <button type="submit" class="cta-button" id="submit-button">Gửi Yêu Cầu</button>
+                    </form>
+                    <p id="form-submission-status" style="margin-top: 1rem; color: var(--neon-cyan);"></p>
                 </div>
+                <!-- END OF MODIFIED BOOKING FORM -->
             </div>
         </div>
     </section>
@@ -909,7 +969,7 @@
     <!-- Font Awesome for Social Icons -->
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
-    <!-- JavaScript for AI Animation -->
+    <!-- JavaScript for AI Animation AND FORM SUBMISSION -->
     <script>
         // AI Animation Connections
         function updateConnections() {
@@ -947,6 +1007,56 @@
         window.addEventListener('load', updateConnections);
         if (document.querySelector('.ai-animation')) {
              setInterval(updateConnections, 100);
+        }
+
+        // Form Submission Script
+        const bookingForm = document.getElementById('vibe-booking-form');
+        const formStatusMessage = document.getElementById('form-submission-status');
+        const submitButton = document.getElementById('submit-button');
+        // !!! IMPORTANT: Using YOUR Web App URL !!!
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhxu7U8PXb0J2-q3tXBVk_dYsDeek7y_F5EXjiy6jnmVT9-UNmd-Pow8tBGz98o0_s_Q/exec'; 
+
+        if (bookingForm) { // Check if the form exists on the page
+            bookingForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Đang gửi...';
+                formStatusMessage.textContent = ''; // Clear previous status
+
+                const formData = new FormData(bookingForm);
+
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors' // Added for potential CORS issues with Apps Script direct POST from client, though Apps Script often handles this. Remove if it causes issues with response handling.
+                })
+                // When using 'no-cors', you cannot access the response body directly.
+                // So we'll assume success if the fetch itself doesn't throw an error.
+                // For more detailed feedback, you'd need to configure CORS properly or proxy the request.
+                .then(response => {
+                    // With 'no-cors', response.ok and response.status are not reliable.
+                    // We can't parse JSON either. We will assume success at this point.
+                    console.log('Fetch sent. Assuming success due to no-cors mode.');
+                    formStatusMessage.textContent = 'Yêu cầu đã được gửi! Chúng tôi sẽ liên hệ trong vòng 24 giờ.';
+                    bookingForm.reset(); // Clear the form fields
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    formStatusMessage.textContent = 'Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại.';
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Gửi Yêu Cầu';
+                    setTimeout(() => {
+                        if(formStatusMessage.textContent.startsWith('Yêu cầu đã được gửi')) { // Only clear success message
+                           formStatusMessage.textContent = '';
+                        }
+                    }, 7000);
+                });
+            });
+        } else {
+            console.warn('Booking form with ID "vibe-booking-form" not found.');
         }
     </script>
 </body>
