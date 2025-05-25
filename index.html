@@ -438,6 +438,9 @@
         .blog-card p {
             color: rgba(255, 255, 255, 0.7);
             margin-bottom: 1.5rem;
+            /* Ensure excerpt doesn't overflow and respects line breaks for display */
+            white-space: pre-line; 
+            word-break: break-word;
         }
         
         .read-more {
@@ -852,7 +855,6 @@
                 <h2>Blog & Insights</h2>
                 <p>Khám phá những bài viết chuyên sâu về marketing, AI và chiến lược thương hiệu</p>
             </div>
-            <!-- 2️⃣ Blog section: bỏ thẻ card cứng, để lại khung trống -->
             <div id="blog-grid" class="blog-grid"></div>
         </div>
     </section>
@@ -870,7 +872,6 @@
                     <p>Đội ngũ chuyên gia marketing của chúng tôi sẽ phân tích chi tiết về doanh nghiệp của bạn và đưa ra những giải pháp phù hợp nhất.</p>
                     <p>Sau khi nhận thông tin, chúng tôi sẽ liên hệ lại trong vòng 24 giờ để sắp xếp buổi tư vấn trực tiếp hoặc online.</p>
                 </div>
-                <!-- MODIFIED BOOKING FORM HERE -->
                 <div class="booking-form">
                     <form id="vibe-booking-form">
                         <div class="form-group">
@@ -897,7 +898,6 @@
                     </form>
                     <p id="form-submission-status" style="margin-top: 1rem; color: var(--neon-cyan);"></p>
                 </div>
-                <!-- END OF MODIFIED BOOKING FORM -->
             </div>
         </div>
     </section>
@@ -921,7 +921,7 @@
                     <ul class="footer-links">
                         <li><a href="#services">Dịch Vụ</a></li>
                         <li><a href="#about">Về Chúng Tôi</a></li>
-                        <li><a href="/blog">Blog</a></li> {/* <!-- Also update here if necessary, or keep as is if /blog is the main blog page --> */}
+                        <li><a href="/blog">Blog</a></li>
                         <li><a href="#booking">Đặt Lịch</a></li>
                     </ul>
                 </div>
@@ -986,33 +986,27 @@
         const bookingForm = document.getElementById('vibe-booking-form');
         const formStatusMessage = document.getElementById('form-submission-status');
         const submitButton = document.getElementById('submit-button');
-        // !!! IMPORTANT: Using YOUR Web App URL !!!
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhxu7U8PXb0J2-q3tXBVk_dYsDeek7y_F5EXjiy6jnmVT9-UNmd-Pow8tBGz98o0_s_Q/exec'; 
 
-        if (bookingForm) { // Check if the form exists on the page
+        if (bookingForm) {
             bookingForm.addEventListener('submit', function(e) {
-                e.preventDefault(); // Prevent the default form submission
+                e.preventDefault(); 
 
                 submitButton.disabled = true;
                 submitButton.textContent = 'Đang gửi...';
-                formStatusMessage.textContent = ''; // Clear previous status
+                formStatusMessage.textContent = ''; 
 
                 const formData = new FormData(bookingForm);
 
                 fetch(SCRIPT_URL, {
                     method: 'POST',
                     body: formData,
-                    mode: 'no-cors' // Added for potential CORS issues with Apps Script direct POST from client, though Apps Script often handles this. Remove if it causes issues with response handling.
+                    mode: 'no-cors' 
                 })
-                // When using 'no-cors', you cannot access the response body directly.
-                // So we'll assume success if the fetch itself doesn't throw an error.
-                // For more detailed feedback, you'd need to configure CORS properly or proxy the request.
                 .then(response => {
-                    // With 'no-cors', response.ok and response.status are not reliable.
-                    // We can't parse JSON either. We will assume success at this point.
                     console.log('Fetch sent. Assuming success due to no-cors mode.');
                     formStatusMessage.textContent = 'Yêu cầu đã được gửi! Chúng tôi sẽ liên hệ trong vòng 24 giờ.';
-                    bookingForm.reset(); // Clear the form fields
+                    bookingForm.reset(); 
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -1022,7 +1016,7 @@
                     submitButton.disabled = false;
                     submitButton.textContent = 'Gửi Yêu Cầu';
                     setTimeout(() => {
-                        if(formStatusMessage.textContent.startsWith('Yêu cầu đã được gửi')) { // Only clear success message
+                        if(formStatusMessage.textContent.startsWith('Yêu cầu đã được gửi')) { 
                            formStatusMessage.textContent = '';
                         }
                     }, 7000);
@@ -1033,7 +1027,7 @@
         }
     </script>
 
-    <!-- 3️⃣ Thêm JS inject 3 bài mới nhất -->
+    <!-- ========= BLOG PREVIEW SCRIPT (updated) ========= -->
     <script>
     /* ========= BLOG PREVIEW (top 3) ========= */
     function resolveAssetPath(src){
@@ -1047,60 +1041,103 @@
       }
       return src;
     }
+
     function parseFrontmatter(raw){
-      const lines = raw.split('\\n');
+      const lines = raw.split(/\r?\n/); // Handles \n and \r\n newlines
       const fm={}; let i=0;
-      if(lines[0].trim()==='---'){
-        for(i=1;i<lines.length;i++){ if(lines[i].trim()==='---'){ i++; break; }
+      if(lines[0] && lines[0].trim()==='---'){ // Added check for lines[0] existence
+        for(i=1;i<lines.length;i++){ 
+          if(lines[i].trim()==='---'){ i++; break; }
           const idx=lines[i].indexOf(':');
-          if(idx>-1){ fm[lines[i].slice(0,idx).trim()]=lines[i].slice(idx+1).trim().replace(/^['\"]|['\"]$/g,''); }
+          if(idx>-1){ 
+            fm[lines[i].slice(0,idx).trim()]=lines[i].slice(idx+1).trim().replace(/^['\"]|['\"]$/g,''); 
+          }
         }
       }
-      return { fm, body: lines.slice(i).join('\\n').trim() };
+      // Ensure body is always a string, even if frontmatter parsing fails or content is empty
+      const bodyContent = lines.slice(i).join('\n').trim();
+      return { fm, body: bodyContent };
     }
+
     async function loadBlogPreview(){
       const wrap=document.getElementById('blog-grid');
       if(!wrap) return;
       try{
-        const dir=await fetch('https://api.github.com/repos/thudm309/vibeagency/contents/content/blog')
-                       .then(r=>r.json());
-        if (!Array.isArray(dir)) {
-            console.error('Blog preview error: GitHub API did not return an array for directory listing.', dir);
-            wrap.innerHTML = '<p style="color: var(--neon-pink);">Không thể tải bài viết. Vui lòng thử lại sau.</p>';
+        const dirResponse = await fetch('https://api.github.com/repos/thudm309/vibeagency/contents/content/blog');
+        if (!dirResponse.ok) {
+            console.error('Blog preview error: Failed to fetch directory listing from GitHub.', dirResponse.status, dirResponse.statusText);
+            let errorMsg = 'Không thể tải bài viết (lỗi API).';
+            if (dirResponse.status === 403) { // Rate limit likely
+                errorMsg = 'Đã vượt quá giới hạn truy cập API GitHub. Vui lòng thử lại sau ít phút.';
+            } else if (dirResponse.status === 404) {
+                errorMsg = 'Không tìm thấy thư mục blog. Vui lòng kiểm tra lại đường dẫn repository.';
+            }
+            wrap.innerHTML = `<p style="color: var(--neon-pink);">${errorMsg}</p>`;
             return;
         }
-        const files=dir.filter(f=>f.name && f.name.endsWith('.md')).slice(0,3);   // 3 newest (GitHub already returns by name; can sort by date if cần)
+        const dir = await dirResponse.json();
+        
+        if (!Array.isArray(dir)) {
+            console.error('Blog preview error: GitHub API did not return an array for directory listing.', dir);
+            wrap.innerHTML = '<p style="color: var(--neon-pink);">Không thể tải bài viết (dữ liệu không hợp lệ). Vui lòng thử lại sau.</p>';
+            return;
+        }
+
+        // Sort files by name (descending for newest, assuming YYYY-MM-DD-slug.md or similar)
+        // Or implement date sorting based on frontmatter if filenames aren't date-ordered
+        const files = dir
+            .filter(f => f.name && f.name.endsWith('.md'))
+            .sort((a, b) => b.name.localeCompare(a.name)) // Basic sort by name (desc)
+            .slice(0, 3);
+            
         if (files.length === 0) {
             wrap.innerHTML = '<p style="color: var(--light);">Chưa có bài viết nào.</p>';
             return;
         }
+
         for(const f of files){
           if (!f.download_url) {
               console.error('Blog preview error: File object missing download_url', f);
-              continue;
+              continue; // Skip this file
           }
-          const raw=await fetch(f.download_url).then(r=>r.text());
-          const {fm,body}=parseFrontmatter(raw);
-          const slug=f.name.replace(/\\.md$/,'');
-          const img=resolveAssetPath(fm.featured_image||'');
-          const dateStr=fm.date||'';
-          const dateDom=dateStr?`<div class=\"blog-date\">${new Date(dateStr).toLocaleDateString('vi-VN',{day:'2-digit',month:'long',year:'numeric'})}</div>`:'';
-          const excerpt=body.replace(/[#>*`_\\-]/g,'').split(/\\s+/).slice(0,30).join(' ')+'…';
+          const rawText = await fetch(f.download_url).then(r => {
+            if (!r.ok) throw new Error(`Failed to fetch ${f.download_url}: ${r.status}`);
+            return r.text();
+          });
+
+          const {fm, body} = parseFrontmatter(rawText);
+          const slug = f.name.replace(/\.md$/, ''); // Corrected regex for .md extension
+          const img = resolveAssetPath(fm.featured_image || '');
+          const dateStr = fm.date || '';
+          let dateDom = '';
+          if (dateStr) {
+            try {
+                dateDom = `<div class="blog-date">${new Date(dateStr).toLocaleDateString('vi-VN',{day:'2-digit',month:'long',year:'numeric'})}</div>`;
+            } catch (dateError) {
+                console.warn(`Invalid date format for ${slug}: ${dateStr}`, dateError);
+                // Optionally, display the raw date string or nothing
+                // dateDom = `<div class="blog-date">${dateStr}</div>`; 
+            }
+          }
+          
+          const bodyText = typeof body === 'string' ? body : '';
+          const excerpt = bodyText.replace(/[#>*`_\\-]/g, '').replace(/\s+/g, ' ').trim().split(' ').slice(0, 30).join(' ') + (bodyText.split(' ').length > 30 ? '…' : '');
+          
           wrap.insertAdjacentHTML('beforeend',`
-            <article class=\"blog-card\">
-              ${img?`<img src=\"${img}\" alt=\"${fm.title||slug}\" class=\"blog-image\" onerror=\"this.style.display='none'\">`:''}
-              <div class=\"blog-content\">
+            <article class="blog-card">
+              ${img ? `<img src="${img}" alt="${fm.title || slug}" class="blog-image" onerror="this.style.display='none'">` : ''}
+              <div class="blog-content">
                 ${dateDom}
-                <h3>${fm.title||slug}</h3>
-                <p>${excerpt}</p>
-                <a href=\"/blog/${slug}\" class=\"read-more\">Đọc tiếp →</a>
+                <h3>${fm.title || slug}</h3>
+                <p>${excerpt || 'Không có nội dung tóm tắt.'}</p>
+                <a href="/blog/${slug}" class="read-more">Đọc tiếp →</a>
               </div>
             </article>
           `);
         }
       }catch(e){ 
-        console.error('Blog preview error',e); 
-        wrap.innerHTML = '<p style="color: var(--neon-pink);">Đã xảy ra lỗi khi tải bài viết. Chi tiết trong console.</p>';
+        console.error('Blog preview loading error:', e); 
+        wrap.innerHTML = '<p style="color: var(--neon-pink);">Đã xảy ra lỗi khi tải bài viết. Vui lòng kiểm tra console để biết thêm chi tiết.</p>';
       }
     }
     document.addEventListener('DOMContentLoaded',loadBlogPreview);
