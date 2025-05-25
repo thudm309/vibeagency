@@ -111,18 +111,18 @@
             height: 300px;
             object-fit: cover;
             border-radius: 15px;
-            margin-bottom: 3rem;
+            /* margin-bottom: 3rem; */ /* FIX: Removed this margin */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             display: block;
-            clear: both;
+            /* clear: both; */ /* Consider removing if no floats precede this */
         }
         
-        .post-content {
+        .post-content { /* This class is on #post-body */
             line-height: 1.8;
             font-size: 1.1rem;
             color: rgba(255, 255, 255, 0.9);
-            clear: both;
-            margin-top: 2rem;
+            /* clear: both; */ /* Consider removing if .post-header is not floated */
+            margin-top: 3rem; /* FIX: Adjusted from 2rem to ensure sufficient space after header */
             position: relative;
             z-index: 1;
             word-break: break-word;     /* Chrome, Edge, Safari */
@@ -143,7 +143,7 @@
         }
         
         .post-header {
-            margin-bottom: 3rem;
+            margin-bottom: 3rem; /* This provides space after the header (which contains the image) */
             text-align: center;
         }
         
