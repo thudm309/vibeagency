@@ -30,6 +30,8 @@
             background-color: var(--deep-blue);
             color: white;
             line-height: 1.7;
+            -webkit-font-smoothing: antialiased; /* Improve text rendering on Webkit */
+            -moz-osx-font-smoothing: grayscale; /* Improve text rendering on Firefox macOS */
         }
         
         .container {
@@ -111,27 +113,29 @@
             height: 300px;
             object-fit: cover;
             border-radius: 15px;
-            /* margin-bottom: 3rem; */ /* FIX: Removed this margin */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             display: block;
-            /* clear: both; */ /* Consider removing if no floats precede this */
         }
         
         .post-content { /* This class is on #post-body */
             line-height: 1.8;
             font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
-            /* clear: both; */ /* Consider removing if .post-header is not floated */
-            margin-top: 3rem; /* FIX: Adjusted from 2rem to ensure sufficient space after header */
+            color: rgba(255, 255, 255, 0.9); /* Consider testing 'color: white;' */
+            margin-top: 3rem; 
             position: relative;
             z-index: 1;
-            word-break: break-word;     /* Chrome, Edge, Safari */
-            overflow-wrap: anywhere;    /* Firefox */
+            word-break: break-word;
+            overflow-wrap: anywhere;
         }
         
         .post-content a {
-            word-break: break-word;     /* Chrome, Edge, Safari */
-            overflow-wrap: anywhere;    /* Firefox */
+            word-break: break-word;
+            overflow-wrap: anywhere;
+            color: var(--neon-pink); /* Added for better link visibility */
+            text-decoration: underline; /* Added for better link visibility */
+        }
+         .post-content a:hover {
+            color: var(--neon-cyan);
         }
         
         .post-content > *:first-child {
@@ -143,7 +147,7 @@
         }
         
         .post-header {
-            margin-bottom: 3rem; /* This provides space after the header (which contains the image) */
+            margin-bottom: 3rem; 
             text-align: center;
         }
         
@@ -205,8 +209,9 @@
         
         .post-tags {
             margin-top: 3rem;
-            padding-top: 2rem;
+            padding-top: 1rem; /* Reduced from 2rem to look better when no image */
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: none; /* Initially hidden, shown by JS if tags exist */
         }
         
         .tag {
@@ -227,7 +232,7 @@
             color: var(--neon-cyan);
             text-decoration: none;
             font-weight: 500;
-            margin-bottom: 2rem;
+            margin-bottom: 2rem; /* Was 2rem, consider if post-tags margin-top makes this too much */
             transition: all 0.3s ease;
         }
         
@@ -287,12 +292,12 @@
                 <p>Bài viết bạn đang tìm không tồn tại hoặc đã bị xóa.</p>
             </div>
             
-            <article id="post-content" style="display: none;">
+            <article id="post-content-wrapper" style="display: none;"> <!-- Renamed id for clarity from JS variable -->
                 <div class="post-container">
                     <header class="post-header">
                         <div class="post-meta">
                             <time id="post-date" class="post-date"></time>
-                            <div id="post-tags" class="post-tags"></div>
+                            <div id="post-tags" class="post-tags"></div> <!-- JS will show this if tags exist -->
                         </div>
                         <h1 id="post-title" class="post-title"></h1>
                         <img id="featured-image" class="post-image" style="display: none;">
@@ -313,40 +318,20 @@
     <script>
         // Get slug from URL
         function getSlugFromURL() {
-            // Priority 1: Check if Cloudflare Function injected the slug
-            if (window.BLOG_SLUG) {
-                console.log('Found slug from Cloudflare Function:', window.BLOG_SLUG);
-                return window.BLOG_SLUG;
-            }
-            
-            // Priority 2: Check URL query parameter (for local development)
+            if (window.BLOG_SLUG) { return window.BLOG_SLUG; }
             const urlParams = new URLSearchParams(window.location.search);
             const postParam = urlParams.get('post');
-            
-            if (postParam) {
-                console.log('Found post parameter:', postParam);
-                return postParam;
-            }
-            
-            // Priority 3: Extract from pathname (fallback)
+            if (postParam) { return postParam; }
             const pathname = window.location.pathname;
             const segments = pathname.split('/').filter(segment => segment.length > 0);
-            
             if (segments.length > 1 && segments[0] === 'blog') {
                 const slug = segments[1].replace('.html', '');
-                if (slug && slug !== 'blog-post') {
-                    console.log('Extracted slug from pathname:', slug);
-                    return slug;
-                }
+                if (slug && slug !== 'blog-post') { return slug; }
             }
-            
-            console.error('No valid slug found in URL');
             return null;
         }
 
-        // Resolve asset path
         function resolveAssetPath(src) {
-            // Converts /uploads/… -> raw.githubusercontent… ; leaves http[s] intact
             if (src.startsWith('/uploads/') || src.startsWith('uploads/')) {
                 const p = src.startsWith('/') ? src.slice(1) : src;
                 return `https://raw.githubusercontent.com/thudm309/vibeagency/main/public/${p}`;
@@ -354,17 +339,12 @@
             if (src.includes('github.com') && src.includes('/blob/')) {
                 return src.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
             }
-            return src;                 // already an external URL
+            return src;
         }
 
-        // Chuyển Markdown sang HTML (đủ heading, danh sách, link, xuống dòng)
         function mdToHtml(md) {
             if (!md || md.trim() === '') return '';
-            
-            // Normalize line endings
             let html = md.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-            
-            // Convert headings first (before paragraph processing)
             html = html
                 .replace(/^###### (.*)$/gim, '<h6>$1</h6>')
                 .replace(/^##### (.*)$/gim, '<h5>$1</h5>')
@@ -372,70 +352,34 @@
                 .replace(/^### (.*)$/gim, '<h3>$1</h3>')
                 .replace(/^## (.*)$/gim, '<h2>$1</h2>')
                 .replace(/^# (.*)$/gim, '<h1>$1</h1>');
-            
-            // Convert bold and italic
             html = html
                 .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.+?)\*/g, '<em>$1</em>');
-            
-            // Convert links [text](url)
             html = html.replace(/\[([^\]]+)]\((https?:\/\/[^\s)]+)\)/gim, 
                 '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-            
-            // Convert images ![alt](src)
             html = html.replace(/!\[([^\]]*)]\(([^)]+)\)/g, (_, alt, src) =>
-                `<img src="${resolveAssetPath(src)}" alt="${alt}" class="post-image">`);
-            
-            // Convert lists
+                `<img src="${resolveAssetPath(src)}" alt="${alt || 'blog image'}" class="post-image">`); // Added default alt
             html = html
                 .replace(/^\s*-\s+(.+)$/gim, '<li>$1</li>')
                 .replace(/^\s*\d+\.\s+(.+)$/gim, '<li>$1</li>');
-            
-            // Wrap consecutive <li> elements in <ul> or <ol>
-            html = html.replace(/(<li>.*?<\/li>)(\n<li>.*?<\/li>)*/g, function(match) {
-                return '<ul>' + match.replace(/\n/g, '') + '</ul>';
-            });
-            
-            // Split into paragraphs (double line breaks)
+            html = html.replace(/(<li>.*?<\/li>)(\n<li>.*?<\/li>)*/g, (match) => 
+                '<ul>' + match.replace(/\n/g, '') + '</ul>');
             const paragraphs = html.split(/\n\s*\n/);
-            
-            // Process each paragraph
             html = paragraphs.map(para => {
                 para = para.trim();
                 if (!para) return '';
-                
-                // Don't wrap headings, lists, images in paragraphs
-                if (para.match(/^<(h[1-6]|ul|ol|li|img)/)) {
-                    return para;
-                }
-                
-                // Convert single line breaks to <br> within paragraphs
+                if (para.match(/^<(h[1-6]|ul|ol|li|img)/)) return para;
                 para = para.replace(/\n/g, '<br>');
-                
                 return `<p>${para}</p>`;
             }).filter(para => para).join('\n');
-            
-            // Clean up any remaining issues
-            html = html
-                .replace(/<p><\/p>/g, '')
-                .replace(/<p>\s*<\/p>/g, '')
-                .replace(/<\/ul>\s*<ul>/g, '')
-                .replace(/<\/ol>\s*<ol>/g, '');
-            
+            html = html.replace(/<p><\/p>|<p>\s*<\/p>|<\/ul>\s*<ul>|<\/ol>\s*<ol>/g, '');
             return html;
         }
 
-        // Parse frontmatter and content
         function parseFrontmatter(content) {
             const lines = content.split('\n');
             let frontmatterEnd = -1;
-            let inFrontmatter = false;
-            
-            // Check if content starts with frontmatter
             if (lines[0] && (lines[0].trim() === '---' || lines[0].includes('title:'))) {
-                inFrontmatter = true;
-                
-                // Find the end of frontmatter
                 for (let i = 1; i < lines.length; i++) {
                     if (lines[i].trim() === '---') {
                         frontmatterEnd = i;
@@ -448,175 +392,137 @@
             let bodyContent = content;
             
             if (frontmatterEnd > 0) {
-                // Parse frontmatter
-                const frontmatterLines = lines.slice(0, frontmatterEnd);
+                const frontmatterLines = lines.slice(0, frontmatterEnd + 1); // Include '---' for parsing
                 frontmatterLines.forEach(line => {
                     const colonIndex = line.indexOf(':');
                     if (colonIndex > 0) {
                         const key = line.substring(0, colonIndex).trim();
-                        const value = line.substring(colonIndex + 1).trim();
+                        let value = line.substring(colonIndex + 1).trim();
+
+                        if (value === "''" || value === '""') { // Quoted empty string
+                            value = ''; 
+                        } else if (key === 'tags' && value === '[]') { // Empty array for tags
+                            value = ''; 
+                        } else if (key === 'draft' && (value.toLowerCase() === 'true' || value.toLowerCase() === 'false')) { // Boolean for draft
+                            value = (value.toLowerCase() === 'true');
+                        }
+                        // Remove surrounding quotes if value is like '"string"' or "'string'"
+                        else if (value.length > 1 && ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))) {
+                            value = value.substring(1, value.length - 1);
+                        }
                         frontmatter[key] = value;
                     }
                 });
-                
-                // Get body content (everything after frontmatter)
                 bodyContent = lines.slice(frontmatterEnd + 1).join('\n').trim();
             }
-            
             return { frontmatter, content: bodyContent };
         }
 
-        // Display blog post
         function displayPost(post) {
             const { frontmatter, content } = parseFrontmatter(post.content || '');
             
-            // Set title
-            const title = frontmatter.title || post.title || 'Untitled';
+            const title = frontmatter.title || 'Untitled';
             document.getElementById('post-title').textContent = title;
             document.title = `${title} - Vibe Agency`;
             
-            // Set date
-            const date = frontmatter.date || post.date;
+            const date = frontmatter.date;
             if (date) {
                 const dateObj = new Date(date);
-                document.getElementById('post-date').textContent = dateObj.toLocaleDateString('vi-VN', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
+                if (!isNaN(dateObj)) {
+                    document.getElementById('post-date').textContent = dateObj.toLocaleDateString('vi-VN', {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                    });
+                } else {
+                     document.getElementById('post-date').textContent = date; // Show as is if not parsable
+                }
+            } else {
+                document.getElementById('post-date').style.display = 'none';
             }
             
-            // Set tags
-            const tags = frontmatter.tags || post.tags;
-            if (tags) {
-                const tagArray = typeof tags === 'string' ? tags.split(',').map(t => t.trim()) : tags;
-                const tagsContainer = document.getElementById('post-tags');
-                tagsContainer.innerHTML = tagArray.map(tag => `<span class="tag">${tag}</span>`).join('');
+            const tagsContainer = document.getElementById('post-tags');
+            const tags = frontmatter.tags; // This could be an empty string or a comma-separated string
+            if (tags && typeof tags === 'string' && tags.trim() !== '') {
+                const tagArray = tags.split(',').map(t => t.trim()).filter(t => t);
+                if (tagArray.length > 0) {
+                    tagsContainer.innerHTML = tagArray.map(tag => `<span class="tag">${tag}</span>`).join('');
+                    tagsContainer.style.display = 'block';
+                } else {
+                    tagsContainer.style.display = 'none';
+                }
+            } else {
+                tagsContainer.style.display = 'none';
             }
             
-            // Set featured image
-            const featuredImage = (frontmatter.featured_image || post.featured_image || '').trim();
-            if (featuredImage) {
-                const imgElement = document.getElementById('featured-image');
-                
-                // Always use GitHub raw URL for immediate availability
-                let imageUrl = featuredImage;
-                
-                // If it's a local path (starts with /uploads/ or similar), convert to GitHub raw URL
-                if (featuredImage.startsWith('/uploads/') || featuredImage.startsWith('uploads/')) {
-                    const imagePath = featuredImage.startsWith('/') ? featuredImage.substring(1) : featuredImage;
-                    imageUrl = `https://raw.githubusercontent.com/thudm309/vibeagency/main/public/${imagePath}`;
-                }
-                // If it's already a GitHub blob URL, convert to raw URL
-                else if (featuredImage.includes('github.com') && featuredImage.includes('/blob/')) {
-                    imageUrl = featuredImage.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
-                }
-                // If it's an external URL (unsplash, etc.), use as-is
-                else if (featuredImage.startsWith('http')) {
-                    imageUrl = featuredImage;
-                }
-                
-                console.log('Loading image from:', imageUrl);
+            const featuredImageSrc = (frontmatter.featured_image || '').trim();
+            const imgElement = document.getElementById('featured-image');
+            if (featuredImageSrc) {
+                let imageUrl = resolveAssetPath(featuredImageSrc);
                 imgElement.src = imageUrl;
+                imgElement.alt = frontmatter.title ? `${frontmatter.title} featured image` : 'Featured image';
                 imgElement.style.display = 'block';
-                
-                // Simple fallback - hide image if it fails to load
                 imgElement.onerror = function() {
-                    console.warn('Could not load', imageUrl);
-                    this.remove();                // xoá hẳn thẻ img nếu không tải được
+                    console.warn('Could not load featured image:', imageUrl);
+                    this.style.display = 'none';
                 };
+            } else {
+                imgElement.style.display = 'none';
             }
             
-            // Process content
             const contentElement = document.getElementById('post-body');
             if (content) {
-                // Remove duplicate title if it exists at the beginning of content
                 let processedContent = content;
-                const titleRegex = new RegExp(`^#\\s*${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\n?`, 'i');
+                const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const titleRegex = new RegExp(`^#\\s*${escapedTitle}\\s*\n?`, 'i');
                 processedContent = processedContent.replace(titleRegex, '');
-                
-                // Convert markdown to HTML
-                const htmlContent = mdToHtml(processedContent);
-                
-                contentElement.innerHTML = htmlContent;
+                contentElement.innerHTML = mdToHtml(processedContent);
             }
             
-            // Show the post
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('post-content').style.display = 'block';
+            document.getElementById('post-content-wrapper').style.display = 'block';
         }
 
-        // Load and display blog post
         async function loadBlogPost() {
             const slug = getSlugFromURL();
-            
             if (!slug) {
-                console.error('No slug found');
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').style.display = 'block';
+                document.getElementById('error').querySelector('h2').textContent = 'Lỗi';
+                document.getElementById('error').querySelector('p').textContent = 'Không tìm thấy slug bài viết trong URL.';
                 return;
             }
 
             try {
-                console.log('Loading blog post for slug:', slug);
-                
                 const apiUrl = `https://api.github.com/repos/thudm309/vibeagency/contents/content/blog/${slug}.md`;
-                console.log('Fetching from:', apiUrl);
-                
-                // Fetch from GitHub API
                 const response = await fetch(apiUrl, {
-                    headers: {
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Accept-Charset': 'utf-8'
-                    }
+                    headers: { 'Accept': 'application/vnd.github.v3+json', 'Accept-Charset': 'utf-8' }
                 });
                 
-                console.log('Response status:', response.status);
-                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-                
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('GitHub API Error:', errorText);
-                    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                    const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                    throw new Error(`GitHub API Error (${response.status}): ${errorData.message || 'Failed to fetch'}`);
                 }
                 
                 const data = await response.json();
-                console.log('GitHub API Response:', data);
+                if (!data.content) throw new Error('No content found in GitHub response');
                 
-                if (!data.content) {
-                    throw new Error('No content found in GitHub response');
-                }
-                
-                // Decode base64 content with proper UTF-8 handling
                 const decodedContent = decodeURIComponent(escape(atob(data.content)));
-                console.log('Decoded content preview:', decodedContent.substring(0, 200));
-                
-                const post = { content: decodedContent };
-                console.log('Parsed post:', post);
-                
-                displayPost(post);
+                displayPost({ content: decodedContent });
 
             } catch (error) {
                 console.error('Error loading blog post:', error);
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('error').style.display = 'block';
-                
-                // Show error details in the error div
                 const errorDiv = document.getElementById('error');
+                errorDiv.style.display = 'block';
                 errorDiv.innerHTML = `
-                    <h2>Error Loading Post</h2>
+                    <h2>Lỗi tải bài viết</h2>
                     <p><strong>Slug:</strong> ${slug}</p>
-                    <p><strong>Error:</strong> ${error.message}</p>
-                    <p>Check browser console for more details.</p>
+                    <p><strong>Lỗi:</strong> ${error.message}</p>
+                    <p>Vui lòng kiểm tra console để biết thêm chi tiết hoặc thử lại sau.</p>
                 `;
             }
         }
 
-        // Load post when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page loaded, starting blog post load...');
-            loadBlogPost();
-        });
+        document.addEventListener('DOMContentLoaded', loadBlogPost);
     </script>
 </body>
 </html>
