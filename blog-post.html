@@ -87,7 +87,6 @@
             position: relative;
         }
         
-        /* Styling for elements within the post header */
         .post-meta {
             text-align: center;
             margin-bottom: 0.5rem; 
@@ -124,18 +123,22 @@
             display: none; 
         }
 
+        /* FIXED: Applying user's suggested CSS for overlap */
         .post-header { 
             margin-bottom: 2rem; 
             text-align: center;
+            position: relative; /* Ensure header has its own stacking context */
+            z-index: 2;         /* Place header above content if overlap occurs */
         }
 
+        /* FIXED: Applying user's suggested CSS for overlap */
         .post-content { 
             line-height: 1.8;
             font-size: 1.1rem;
             color: white; 
             margin-top: 0; 
-            position: relative;
-            z-index: 1;
+            position: static; /* Remove custom stacking context, rely on normal flow */
+            /* z-index: 1;  -- Removed as position is static */
             word-break: break-word;
             overflow-wrap: anywhere;
         }
@@ -431,7 +434,7 @@
         }
 
         function displayPost(post) {
-            const { frontmatter, content: bodyContent } = parseFrontmatter(post.content || ''); // Renamed for clarity
+            const { frontmatter, content: bodyContent } = parseFrontmatter(post.content || '');
             
             const title = frontmatter.title || 'Untitled';
             document.getElementById('post-title').textContent = title;
@@ -484,9 +487,8 @@
             }
             
             const contentElement = document.getElementById('post-body');
-            if (bodyContent) { // Use the correctly separated bodyContent
+            if (bodyContent) { 
                 let processedContent = bodyContent;
-                // This regex is a fallback for cases where the body MIGHT still start with H1 of the title
                 if (title !== 'Untitled') { 
                     const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                     const titleRegex = new RegExp(`^#\\s*${escapedTitle}\\s*([\\r\\n]+|$)`, 'i');
@@ -524,7 +526,6 @@
                 const data = await response.json();
                 if (!data.content) throw new Error('No content found in GitHub response');
                 
-                // Use TextDecoder for more robust UTF-8 decoding
                 const binaryString = atob(data.content);
                 const bytes = new Uint8Array(binaryString.length);
                 for (let i = 0; i < binaryString.length; i++) {
