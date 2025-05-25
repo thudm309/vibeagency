@@ -747,7 +747,7 @@
                 <ul class="nav-links">
                     <li><a href="#services">Dịch Vụ</a></li>
                     <li><a href="#about">Về Chúng Tôi</a></li>
-                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="/blog">Blog</a></li> {/* <!-- 1️⃣ Navbar → trỏ sang trang blog --> */}
                     <li><a href="#booking">Đặt Lịch</a></li>
                 </ul>
                 <a href="#booking"><button class="cta-button">Liên Hệ Ngay</button></a>
@@ -852,35 +852,8 @@
                 <h2>Blog & Insights</h2>
                 <p>Khám phá những bài viết chuyên sâu về marketing, AI và chiến lược thương hiệu</p>
             </div>
-            <div class="blog-grid">
-                <div class="blog-card">
-                    <img src="https://images.unsplash.com/photo-1677442135184-d849f54a7930?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="AI Marketing Blog" class="blog-image">
-                    <div class="blog-content">
-                        <div class="blog-date">12 Tháng 05, 2025</div>
-                        <h3>5 Cách AI Đang Thay Đổi Marketing Truyền Thống</h3>
-                        <p>Khám phá cách trí tuệ nhân tạo đang cách mạng hóa ngành marketing và cách doanh nghiệp vừa và nhỏ có thể tận dụng xu hướng này.</p>
-                        <a href="/blog/ai-marketing" class="read-more">Đọc tiếp →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Social Media Marketing Blog" class="blog-image">
-                    <div class="blog-content">
-                        <div class="blog-date">05 Tháng 05, 2025</div>
-                        <h3>Chiến Lược Social Media Hiệu Quả Cho Doanh Nghiệp Nhỏ</h3>
-                        <p>Những chiến lược social media đơn giản nhưng hiệu quả giúp doanh nghiệp nhỏ cạnh tranh với các đối thủ lớn hơn.</p>
-                        <a href="/blog/social-media" class="read-more">Đọc tiếp →</a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <img src="https://images.unsplash.com/photo-1560472355-536de3962603?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Brand Building Blog" class="blog-image">
-                    <div class="blog-content">
-                        <div class="blog-date">28 Tháng 04, 2025</div>
-                        <h3>Xây Dựng Thương Hiệu Trong Kỷ Nguyên Số</h3>
-                        <p>Những nguyên tắc cốt lõi giúp xây dựng thương hiệu mạnh mẽ và bền vững trong thời đại kỹ thuật số đầy biến động.</p>
-                        <a href="/blog/brand-building" class="read-more">Đọc tiếp →</a>
-                    </div>
-                </div>
-            </div>
+            <!-- 2️⃣ Blog section: bỏ thẻ card cứng, để lại khung trống -->
+            <div id="blog-grid" class="blog-grid"></div>
         </div>
     </section>
 
@@ -948,7 +921,7 @@
                     <ul class="footer-links">
                         <li><a href="#services">Dịch Vụ</a></li>
                         <li><a href="#about">Về Chúng Tôi</a></li>
-                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="/blog">Blog</a></li> {/* <!-- Also update here if necessary, or keep as is if /blog is the main blog page --> */}
                         <li><a href="#booking">Đặt Lịch</a></li>
                     </ul>
                 </div>
@@ -1058,6 +1031,79 @@
         } else {
             console.warn('Booking form with ID "vibe-booking-form" not found.');
         }
+    </script>
+
+    <!-- 3️⃣ Thêm JS inject 3 bài mới nhất -->
+    <script>
+    /* ========= BLOG PREVIEW (top 3) ========= */
+    function resolveAssetPath(src){
+      if(!src) return '';
+      if(src.startsWith('/uploads/')||src.startsWith('uploads/')){
+          const p = src.startsWith('/')? src.slice(1) : src;
+          return `https://raw.githubusercontent.com/thudm309/vibeagency/main/public/${p}`;
+      }
+      if(src.includes('github.com') && src.includes('/blob/')){
+          return src.replace('github.com','raw.githubusercontent.com').replace('/blob/','/');
+      }
+      return src;
+    }
+    function parseFrontmatter(raw){
+      const lines = raw.split('\\n');
+      const fm={}; let i=0;
+      if(lines[0].trim()==='---'){
+        for(i=1;i<lines.length;i++){ if(lines[i].trim()==='---'){ i++; break; }
+          const idx=lines[i].indexOf(':');
+          if(idx>-1){ fm[lines[i].slice(0,idx).trim()]=lines[i].slice(idx+1).trim().replace(/^['\"]|['\"]$/g,''); }
+        }
+      }
+      return { fm, body: lines.slice(i).join('\\n').trim() };
+    }
+    async function loadBlogPreview(){
+      const wrap=document.getElementById('blog-grid');
+      if(!wrap) return;
+      try{
+        const dir=await fetch('https://api.github.com/repos/thudm309/vibeagency/contents/content/blog')
+                       .then(r=>r.json());
+        if (!Array.isArray(dir)) {
+            console.error('Blog preview error: GitHub API did not return an array for directory listing.', dir);
+            wrap.innerHTML = '<p style="color: var(--neon-pink);">Không thể tải bài viết. Vui lòng thử lại sau.</p>';
+            return;
+        }
+        const files=dir.filter(f=>f.name && f.name.endsWith('.md')).slice(0,3);   // 3 newest (GitHub already returns by name; can sort by date if cần)
+        if (files.length === 0) {
+            wrap.innerHTML = '<p style="color: var(--light);">Chưa có bài viết nào.</p>';
+            return;
+        }
+        for(const f of files){
+          if (!f.download_url) {
+              console.error('Blog preview error: File object missing download_url', f);
+              continue;
+          }
+          const raw=await fetch(f.download_url).then(r=>r.text());
+          const {fm,body}=parseFrontmatter(raw);
+          const slug=f.name.replace(/\\.md$/,'');
+          const img=resolveAssetPath(fm.featured_image||'');
+          const dateStr=fm.date||'';
+          const dateDom=dateStr?`<div class=\"blog-date\">${new Date(dateStr).toLocaleDateString('vi-VN',{day:'2-digit',month:'long',year:'numeric'})}</div>`:'';
+          const excerpt=body.replace(/[#>*`_\\-]/g,'').split(/\\s+/).slice(0,30).join(' ')+'…';
+          wrap.insertAdjacentHTML('beforeend',`
+            <article class=\"blog-card\">
+              ${img?`<img src=\"${img}\" alt=\"${fm.title||slug}\" class=\"blog-image\" onerror=\"this.style.display='none'\">`:''}
+              <div class=\"blog-content\">
+                ${dateDom}
+                <h3>${fm.title||slug}</h3>
+                <p>${excerpt}</p>
+                <a href=\"/blog/${slug}\" class=\"read-more\">Đọc tiếp →</a>
+              </div>
+            </article>
+          `);
+        }
+      }catch(e){ 
+        console.error('Blog preview error',e); 
+        wrap.innerHTML = '<p style="color: var(--neon-pink);">Đã xảy ra lỗi khi tải bài viết. Chi tiết trong console.</p>';
+      }
+    }
+    document.addEventListener('DOMContentLoaded',loadBlogPreview);
     </script>
 </body>
 </html>
