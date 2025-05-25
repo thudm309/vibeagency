@@ -83,13 +83,14 @@
             border-radius: 20px;
             padding: 3rem;
             max-width: 800px;
-            margin: 2rem auto; /* Original margin-top for post-container from top of .blog-post */
+            margin: 2rem auto;
             position: relative;
         }
         
+        /* Styling for elements within the post header */
         .post-meta {
             text-align: center;
-            margin-bottom: 1rem; /* Reduced margin */
+            margin-bottom: 0.5rem; /* Space after date */
             color: var(--neon-cyan);
             font-size: 1rem;
             font-weight: 500;
@@ -97,7 +98,7 @@
         
         .post-title { /* h1#post-title from frontmatter */
             font-size: 2.5rem;
-            margin-bottom: 1rem; /* Space below title, before featured image or end of header */
+            /* No top/bottom margin, handled by siblings or parent spacing */
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
             background-clip: text;
             -webkit-background-clip: text;
@@ -107,7 +108,7 @@
         }
         
         /* For the main featured image (img#featured-image) */
-        .post-image { 
+        #featured-image.post-image { 
             width: 100%;
             max-width: 100%;
             height: 300px;
@@ -115,19 +116,27 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             display: block; 
-            margin-top: 1.5rem; /* Space between title and featured image if shown */
+            margin-top: 1.5rem; /* Space after title, if image is shown */
         }
         
-        .post-header { /* <header> element inside .post-container */
-            margin-bottom: 1.5rem; /* Space after the entire post header block */
+        #post-tags.post-tags {
+            margin-top: 1.5rem; /* Space after title OR featured image, if tags are shown */
+            padding-top: 1rem; 
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: none; /* JS will show this if tags exist */
+        }
+
+        /* The <header> element inside .post-container wrapping meta, title, image, tags */
+        .post-header { 
+            margin-bottom: 2rem; /* Main space between entire header block and content body */
             text-align: center;
         }
 
         .post-content { /* div#post-body, where Markdown body is rendered */
             line-height: 1.8;
             font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-top: 1.5rem; /* Space before the body content, collapses with .post-header's margin-bottom */
+            color: white; /* Changed from rgba(255,255,255,0.9) for full opacity */
+            margin-top: 0; /* Rely on .post-header's margin-bottom */
             position: relative;
             z-index: 1;
             word-break: break-word;
@@ -184,7 +193,7 @@
         
         .post-content p {
             margin-bottom: 1.2rem;
-            text-align: justify;
+            text-align: left; /* Changed from justify */
         }
         
         .post-content ul, .post-content ol {
@@ -194,7 +203,7 @@
         
         .post-content li {
             margin-bottom: 0.5rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.8); /* Keeping slight transparency for list items for now */
         }
         
         .post-content strong {
@@ -218,14 +227,7 @@
             color: var(--neon-cyan);
         }
         
-        .post-tags {
-            margin-top: 2rem; /* Space above tags */
-            padding-top: 1rem; 
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: none; 
-        }
-        
-        .tag {
+        .tag { /* Individual tag style */
             display: inline-block;
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
             color: var(--dark);
@@ -247,7 +249,6 @@
             color: var(--neon-cyan);
             text-decoration: none;
             font-weight: 500;
-            /* margin-bottom: 2rem; -- Removed, .post-footer handles spacing now */
             transition: all 0.3s ease;
         }
         
@@ -277,7 +278,7 @@
             .post-title {
                 font-size: 2rem;
             }
-            .post-image { /* Featured image */
+            #featured-image.post-image { /* Featured image */
                 height: 250px;
             }
             .post-content {
@@ -313,11 +314,10 @@
                     <header class="post-header">
                         <div class="post-meta">
                             <time id="post-date" class="post-date"></time>
-                            <!-- Tags will be injected here by JS if they exist -->
                         </div>
                         <h1 id="post-title" class="post-title"></h1>
                         <img id="featured-image" class="post-image" style="display: none;">
-                        <div id="post-tags" class="post-tags"></div> <!-- Moved tags to be part of header visually -->
+                        <div id="post-tags" class="post-tags"></div>
                     </header>
                     
                     <div id="post-body" class="post-content">
@@ -370,27 +370,25 @@
                 .replace(/^## (.*)$/gim, '<h2>$1</h2>')
                 .replace(/^# (.*)$/gim, '<h1>$1</h1>');
             html = html
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Ensure non-greedy match
-                .replace(/\*(.*?)\*/g, '<em>$1</em>');     // Ensure non-greedy match
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
             html = html.replace(/\[([^\]]+)]\((https?:\/\/[^\s)]+)\)/gim, 
                 '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
             
-            // Use .body-image for images from Markdown content
             html = html.replace(/!\[([^\]]*)]\(([^)]+)\)/g, (_, alt, src) =>
                 `<img src="${resolveAssetPath(src)}" alt="${alt || 'blog image'}" class="body-image">`); 
             
-            html = html
-                .replace(/^\s*-\s+(.+)$/gim, '<li>$1</li>')
-                .replace(/^\s*\d+\.\s+(.+)$/gim, '<li>$1</li>');
-            html = html.replace(/(<li>.*?<\/li>)(?:\n<li>.*?<\/li>)*/gs, (match) => // Added 's' flag for multiline
-                '<ul>' + match.replace(/\n/g, '') + '</ul>');
+            // Simplified list handling for <ul>, assumes no complex nesting
+            html = html.replace(/^\s*[-*+]\s+(.+)$/gim, '<li>$1</li>');
+            html = html.replace(/(<li>.*?<\/li>\s*)+/g, (match) => `<ul>\n${match.trim()}\n</ul>\n`);
+            // Note: Ordered lists (1. item) would also be wrapped in <ul> with this simple parser.
             
             const paragraphs = html.split(/\n\s*\n/);
             html = paragraphs.map(para => {
                 para = para.trim();
                 if (!para) return '';
-                if (para.match(/^<(h[1-6]|ul|ol|li|img|blockquote|pre)/i)) return para; // Added more tags
-                para = para.replace(/\n/g, '<br>');
+                if (para.match(/^<(h[1-6]|ul|ol|li|img|blockquote|pre)/i)) return para;
+                para = para.replace(/\n/g, '<br>'); // Convert single newlines in paragraphs to <br>
                 return `<p>${para}</p>`;
             }).filter(para => para).join('\n');
             html = html.replace(/<p><\/p>|<p>\s*<\/p>|<\/ul>\s*<ul>|<\/ol>\s*<ol>/g, '');
@@ -413,7 +411,7 @@
             let bodyContent = content;
             
             if (frontmatterEnd > 0) {
-                const frontmatterLines = lines.slice(0, frontmatterEnd +1); // Process up to and including the closing '---'
+                const frontmatterLines = lines.slice(0, frontmatterEnd +1);
                 bodyContent = lines.slice(frontmatterEnd + 1).join('\n').trim();
 
                 frontmatterLines.forEach(line => {
@@ -422,11 +420,9 @@
                         const key = line.substring(0, colonIndex).trim();
                         let value = line.substring(colonIndex + 1).trim();
 
-                        if (value === "''" || value === '""') { 
-                            value = ''; 
-                        } else if (key === 'tags' && value === '[]') { 
-                            value = ''; 
-                        } else if (key === 'draft' && (value.toLowerCase() === 'true' || value.toLowerCase() === 'false')) {
+                        if (value === "''" || value === '""') { value = ''; } 
+                        else if (key === 'tags' && value === '[]') { value = ''; } 
+                        else if (key === 'draft' && (value.toLowerCase() === 'true' || value.toLowerCase() === 'false')) {
                             value = (value.toLowerCase() === 'true');
                         }
                         else if (value.length > 1 && ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'")))) {
@@ -495,9 +491,9 @@
             const contentElement = document.getElementById('post-body');
             if (content) {
                 let processedContent = content;
-                if (title !== 'Untitled') { // Only try to remove title if it's not the default
+                if (title !== 'Untitled') { 
                     const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    const titleRegex = new RegExp(`^#\\s*${escapedTitle}\\s*[\\r\\n]?`, 'i');
+                    const titleRegex = new RegExp(`^#\\s*${escapedTitle}\\s*([\\r\\n]+)?`, 'i');
                     processedContent = processedContent.replace(titleRegex, '');
                 }
                 contentElement.innerHTML = mdToHtml(processedContent.trim());
