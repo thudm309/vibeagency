@@ -1,11 +1,10 @@
 ---
 title: 5 Cách AI Đang Thay Đổi Marketing Truyền Thống
 date: 2025-05-12T10:00:00
-featured_image: https://images.unsplash.com/photo-1677442135184-d849f54a7930?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80
+featured_image: /uploads/growtika-nGoCBxiaRO0-unsplash.jpg
 tags: AI, Marketing, Technology, Digital Transformation
 draft: false
 ---
-
 # 5 Cách AI Đang Thay Đổi Marketing Truyền Thống
 
 Trí tuệ nhân tạo (AI) đang cách mạng hóa cách chúng ta tiếp cận marketing. Từ việc cá nhân hóa trải nghiệm khách hàng đến tự động hóa các chiến dịch, AI mang lại những cơ hội không giới hạn cho các doanh nghiệp muốn tối ưu hóa hiệu quả marketing.
