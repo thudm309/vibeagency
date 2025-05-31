@@ -1,7 +1,7 @@
 ---
 title: Vibe Agency – Đồng hành cùng doanh nghiệp bứt phá Marketing bằng AI
 date: 2025-05-25T07:50:00
-featured_image: ''
+featured_image: /uploads/annie-spratt-QckxruozjRg-unsplash.jpg
 tags: []
 draft: false
 ---
@@ -38,10 +38,11 @@ Mọi dữ liệu được trực quan hóa trên một bảng điều khiển d
 ![](/uploads/ChatGPT%20Image%20May%2025%2C%202025%2C%2007_56_17%20AM.png)
 
 ### 
+
 4. Lời mời hợp tác
 
 Nếu bạn đang tìm kiếm một đối tác **“có chất xám AI & hiểu bối cảnh Việt Nam”**, Vibe Agency sẵn sàng đồng hành.
 
-> **Hotline**: 0909 xxx xxx | **Email**: [hello@vibeagency.vn]() | **Website**: vibeagency.vn
+> **Hotline**: 0989618667 | **Email**: tiffany@vibeagency.vn | **Website**: vibeagency.vn
 
 Hãy để AI trở thành “động cơ tăng áp” cho chiến lược marketing của bạn ngay hôm nay – và Vibe Agency sẽ là đội đặc nhiệm giúp bạn chinh phục mục tiêu đó.
