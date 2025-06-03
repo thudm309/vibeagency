@@ -1,7 +1,7 @@
 ---
 title: 8 Chiến Lược Marketing Miễn Phí Hiệu Quả Cho Doanh Nghiệp
 date: 2025-06-02T21:42:00
-featured_image: /uploads/ad5624b0-8d30-45e1-b307-6425b822936b.png
+featured_image: /uploads/ChatGPT Image May 25, 2025, 07_56_17 AM.png
 tags: []
 draft: false
 ---
