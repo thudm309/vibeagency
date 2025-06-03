@@ -7,6 +7,8 @@ draft: false
 ---
 Với các doanh nghiệp vừa và nhỏ, ngân sách marketing thường rất hạn chế. Tuy nhiên, điều đó không có nghĩa bạn không thể tiếp cận khách hàng hoặc xây dựng thương hiệu. Marketing 0 đồng là giải pháp phù hợp trong bối cảnh này.
 
+![](/uploads/ad5624b0-8d30-45e1-b307-6425b822936b.png)
+
 ## **Marketing 0 đồng là gì?**
 
 Marketing 0 đồng là chiến lược tiếp thị mà bạn không cần chi ngân sách (hoặc rất ít) để triển khai. Hình thức này tận dụng tối đa các công cụ miễn phí sẵn có – đặc biệt trên internet – để quảng bá thương hiệu, tiếp cận khách hàng và tăng doanh số.
