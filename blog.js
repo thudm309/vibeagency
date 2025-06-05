@@ -74,7 +74,7 @@ function parseMarkdown(content, filename) {
         date: data.date || new Date().toISOString(),
         featured_image: data.featured_image,
         tags: data.tags ? data.tags.split(',').map(t => t.trim()) : [],
-        draft: data.draft === 'true',
+        draft: String(data.draft).toLowerCase() === 'true',
         body: body.trim(),
         excerpt: body.trim().substring(0, 150) + '...'
     };
@@ -124,7 +124,13 @@ function formatDate(dateString) {
 }
 
 // Load blog posts when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Page loaded, initializing blog...');
-    loadBlogPosts();
-});
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page loaded, initializing blog...');
+        loadBlogPosts();
+    });
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { parseMarkdown };
+}
