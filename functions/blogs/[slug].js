@@ -1,4 +1,4 @@
-// functions/blog/[slug].js
+// functions/blogs/[slug].js
 export async function onRequest(context) {
   const { params, request, env } = context;
   let slug = params.slug;

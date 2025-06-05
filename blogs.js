@@ -1,4 +1,4 @@
-// blog.js - Dynamic blog loading for Vibe Agency
+// blogs.js - Dynamic blog loading for Vibe Agency
 async function loadBlogPosts() {
     try {
         console.log('Loading blog posts...');
@@ -101,7 +101,7 @@ function renderBlogPosts(posts) {
                 <div class="blog-date">${formatDate(post.date)}</div>
                 <h3>${post.title}</h3>
                 <p>${post.excerpt}</p>
-                <a href="/blog/${post.slug}" class="read-more">Đọc tiếp →</a>
+                <a href="/blogs/${post.slug}" class="read-more">Đọc tiếp →</a>
             </div>
         </div>
     `).join('');
